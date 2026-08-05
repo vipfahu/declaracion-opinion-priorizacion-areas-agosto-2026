@@ -97,6 +97,8 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
   .aside-columnas{max-width:none}
 }
 </style>
+<script src="https://unpkg.com/d3@7.9.0/dist/d3.min.js" integrity="sha384-CjloA8y00+1SDAUkjs099PVfnY2KmDC2BZnws9kh8D/lX1s46w6EPhpXdqMfjK6i" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/topojson-client@3.1.0/dist/topojson-client.min.js" integrity="sha384-Ukv1p/xTma6P4/2bY5KzWBw+ydSpXmhCMtyciIQVDJ1RmOxtCYNMF1uXT9T63H67" crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -318,7 +320,14 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
   </div>
   <div id="nota-firma" style="display:none;font-size:13px;color:var(--color-accent-300)"></div>
   <div id="dist-firmas" style="display:none;flex-direction:column;gap:var(--space-4);margin-bottom:calc(var(--space-8)*1.5)">
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:calc(var(--space-8)*2)">
+    <div style="display:flex;flex-wrap:wrap;gap:calc(var(--space-8)*2);align-items:flex-start">
+    <div id="mapa-wrap" style="display:none;flex:0 0 216px;flex-direction:column;gap:var(--space-3)">
+      <div class="accent-mark"></div>
+      <h4>Firmantes en el territorio</h4>
+      <div id="mapa-chile" style="line-height:0"></div>
+      <div id="mapa-nota" class="text-muted" style="font-size:11px;line-height:1.5">Ciudades sede de las universidades de las personas firmantes; el tamaño del punto indica su número.</div>
+    </div>
+    <div style="flex:1 1 320px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:calc(var(--space-8)*2)">
       <div style="display:flex;flex-direction:column;gap:var(--space-4)">
         <div class="accent-mark"></div>
         <h4>Firmantes por disciplina o área</h4>
@@ -329,6 +338,7 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
         <h4>Firmantes por universidad o institución</h4>
         <div id="bars-f-uni" style="display:flex;flex-direction:column;gap:var(--space-3)"></div>
       </div>
+    </div>
     </div>
   </div>
   <div id="firmas-vacio" class="vacio">Aún no hay firmantes registrados.</div>
@@ -535,6 +545,142 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
     });
   }
 
+  var CIUDADES = { 'Arica': [-70.3126, -18.4783], 'Iquique': [-70.1357, -20.2307], 'Antofagasta': [-70.3975, -23.6509], 'Copiapó': [-70.3323, -27.3668], 'La Serena': [-71.2519, -29.9027], 'Valparaíso': [-71.6127, -33.0472], 'Viña del Mar': [-71.5518, -33.0245], 'Santiago': [-70.6693, -33.4489], 'Rancagua': [-70.7444, -34.1708], 'Talca': [-71.6554, -35.4264], 'Chillán': [-72.1034, -36.6066], 'Concepción': [-73.0444, -36.8201], 'Temuco': [-72.5904, -38.7359], 'Valdivia': [-73.2459, -39.8142], 'Osorno': [-73.1335, -40.5739], 'Coyhaique': [-72.0662, -45.5752], 'Punta Arenas': [-70.9171, -53.1638] };
+  var UNIS = [
+    ['pontificia universidad catolica de chile;universidad catolica de chile', 'uc', 'Santiago'],
+    ['pontificia universidad catolica de valparaiso;universidad catolica de valparaiso', 'pucv', 'Valparaíso'],
+    ['universidad academia de humanismo cristiano;academia de humanismo', 'uahc', 'Santiago'],
+    ['universidad adolfo ibanez', 'uai', 'Santiago'],
+    ['universidad adventista de chile', 'unach', 'Chillán'],
+    ['universidad alberto hurtado', 'uah', 'Santiago'],
+    ['universidad andres bello', 'unab', 'Santiago'],
+    ['universidad arturo prat', 'unap', 'Iquique'],
+    ['universidad austral de chile;universidad austral', 'uach', 'Valdivia'],
+    ['universidad autonoma de chile;u. autonoma', '', 'Temuco'],
+    ['universidad bernardo o higgins', 'ubo', 'Santiago'],
+    ['universidad bolivariana', '', 'Santiago'],
+    ['universidad catolica de la santisima concepcion;santisima concepcion', 'ucsc', 'Concepción'],
+    ['universidad catolica de temuco', 'uct', 'Temuco'],
+    ['universidad catolica del maule', 'ucm', 'Talca'],
+    ['universidad catolica del norte', 'ucn', 'Antofagasta'],
+    ['universidad catolica cardenal raul silva henriquez;silva henriquez', 'ucsh', 'Santiago'],
+    ['universidad central de chile;universidad central', 'ucen', 'Santiago'],
+    ['universidad de aconcagua', 'uac', 'Santiago'],
+    ['universidad de antofagasta', '', 'Antofagasta'],
+    ['universidad de artes ciencias y comunicacion', 'uniacc', 'Santiago'],
+    ['universidad de atacama', 'uda', 'Copiapó'],
+    ['universidad de aysen', 'uaysen', 'Coyhaique'],
+    ['universidad de chile;u. de chile', 'uchile', 'Santiago'],
+    ['universidad de concepcion', 'udec', 'Concepción'],
+    ['universidad de la frontera', 'ufro', 'Temuco'],
+    ['universidad de la serena', 'uls', 'La Serena'],
+    ['universidad de las americas', 'udla', 'Santiago'],
+    ['universidad de los andes', 'uandes', 'Santiago'],
+    ['universidad de los lagos', 'ulagos', 'Osorno'],
+    ['universidad de magallanes', 'umag', 'Punta Arenas'],
+    ['universidad de o higgins;universidad de ohiggins', 'uoh', 'Rancagua'],
+    ['universidad de playa ancha', 'upla', 'Valparaíso'],
+    ['universidad de santiago de chile;universidad de santiago', 'usach', 'Santiago'],
+    ['universidad de talca', 'utalca', 'Talca'],
+    ['universidad de tarapaca', 'uta', 'Arica'],
+    ['universidad de valparaiso', 'uv', 'Valparaíso'],
+    ['universidad de vina del mar', 'uvm', 'Viña del Mar'],
+    ['universidad del alba', 'udalba', 'La Serena'],
+    ['universidad del bio bio', 'ubb', 'Concepción'],
+    ['universidad del desarrollo', 'udd', 'Santiago'],
+    ['universidad diego portales', 'udp', 'Santiago'],
+    ['universidad finis terrae;finis terrae', '', 'Santiago'],
+    ['universidad gabriela mistral', 'ugm', 'Santiago'],
+    ['universidad la republica', 'ulare', 'Santiago'],
+    ['universidad los leones', 'ull', 'Santiago'],
+    ['universidad mayor;u. mayor', 'umayor', 'Santiago'],
+    ['universidad metropolitana de ciencias de la educacion', 'umce', 'Santiago'],
+    ['universidad miguel de cervantes', 'umc', 'Santiago'],
+    ['universidad san sebastian', 'uss', 'Santiago'],
+    ['universidad santo tomas', 'ust', 'Santiago'],
+    ['universidad sek', 'usek', 'Santiago'],
+    ['universidad tecnica federico santa maria;federico santa maria', 'usm;utfsm', 'Valparaíso'],
+    ['universidad tecnologica de chile inacap', 'inacap', 'Santiago'],
+    ['universidad tecnologica metropolitana', 'utem', 'Santiago']
+  ].map(function (u) { return { alias: u[0].split(';'), abbr: u[1] ? u[1].split(';') : [], c: u[2] }; });
+
+  function normTxt(s) {
+    return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/['\u2019\u00b4\u0060]/g, ' ').replace(/[-\u2013\u2014/]/g, ' ').replace(/[^a-z0-9. ]/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+
+  function ciudadDeInst(inst) {
+    var n = normTxt(inst);
+    if (!n) return null;
+    var best = null, bestLen = 0;
+    UNIS.forEach(function (u) {
+      u.alias.forEach(function (a) { if (a.length > bestLen && n.indexOf(a) >= 0) { best = u.c; bestLen = a.length; } });
+    });
+    if (best) return best;
+    for (var i = 0; i < UNIS.length; i++) {
+      var u = UNIS[i];
+      for (var j = 0; j < u.abbr.length; j++) {
+        var a = u.abbr[j];
+        if (!a) continue;
+        var re = new RegExp('(^|[^a-z0-9])' + a.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '([^a-z0-9]|$)');
+        if (re.test(n)) return u.c;
+      }
+    }
+    return null;
+  }
+
+  var MAPA_W = 216, MAPA_H = 620;
+  var dChile = '', proyChile = null;
+  function initMapa() {
+    if (!window.d3 || !window.topojson || !window.fetch) return;
+    fetch('https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json')
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function (t) {
+        var fs = topojson.feature(t, t.objects.countries).features, f = null;
+        for (var i = 0; i < fs.length; i++) { if (String(fs[i].id) === '152') { f = fs[i]; break; } }
+        if (!f) return;
+        var coords = f.geometry.type === 'MultiPolygon'
+          ? f.geometry.coordinates.filter(function (p) { return p[0][0][0] > -76.5; })
+          : [f.geometry.coordinates];
+        var geo = { type: 'Feature', geometry: { type: 'MultiPolygon', coordinates: coords } };
+        proyChile = d3.geoMercator().fitExtent([[10, 10], [MAPA_W - 10, MAPA_H - 10]], geo);
+        dChile = d3.geoPath(proyChile)(geo);
+        pintarMapa();
+      }).catch(function () {});
+  }
+
+  function pintarMapa() {
+    var wrap = $('mapa-wrap'), cont = $('mapa-chile'), nota = $('mapa-nota');
+    if (!wrap || !cont || !dChile || !proyChile) return;
+    var counts = {}, sinMatch = 0;
+    firmas.forEach(function (f) {
+      var c = ciudadDeInst(f.inst);
+      if (c && CIUDADES[c]) counts[c] = (counts[c] || 0) + 1;
+      else if (String(f.inst || '').trim()) sinMatch++;
+    });
+    wrap.style.display = 'flex';
+    var pts = Object.keys(counts).map(function (c) {
+      var xy = proyChile(CIUDADES[c]);
+      return { c: c, n: counts[c], x: xy[0], y: xy[1] };
+    }).sort(function (a, b) { return a.y - b.y; });
+    var dots = '', labels = '', ly = -99;
+    pts.forEach(function (p) { p.ly = Math.max(p.y + 3, ly + 12); ly = p.ly; });
+    pts.forEach(function (p) {
+      var r = Math.min(11, 3 + 2.2 * Math.sqrt(p.n));
+      dots += '<circle cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) + '" r="' + r.toFixed(1) + '" fill="var(--color-accent-600)" fill-opacity="0.55" stroke="var(--color-accent-300)" stroke-width="1"><title>' + esc(p.c) + ': ' + p.n + (p.n === 1 ? ' firmante' : ' firmantes') + '</title></circle>';
+      var lx = p.x + r + 5;
+      if (Math.abs(p.ly - p.y) > 5) dots += '<line x1="' + (p.x + r + 1).toFixed(1) + '" y1="' + p.y.toFixed(1) + '" x2="' + (lx - 2).toFixed(1) + '" y2="' + (p.ly - 3).toFixed(1) + '" stroke="var(--color-divider)" stroke-width="1"></line>';
+      labels += '<text x="' + lx.toFixed(1) + '" y="' + p.ly.toFixed(1) + '" font-size="10" fill="var(--color-neutral-400)">' + esc(p.c) + ' <tspan fill="var(--color-accent-300)">' + p.n + '</tspan></text>';
+    });
+    cont.innerHTML = '<svg viewBox="0 0 ' + MAPA_W + ' ' + MAPA_H + '" width="100%" style="max-width:' + MAPA_W + 'px" role="img" aria-label="Mapa de Chile con las ciudades de las universidades de las personas firmantes">' +
+      '<path d="' + dChile + '" fill="var(--color-neutral-900)" stroke="var(--color-divider)" stroke-width="1"></path>' + dots + labels + '</svg>';
+    if (nota) {
+      var base = 'Ciudades sede de las universidades de las personas firmantes; el tamaño del punto indica su número.';
+      nota.textContent = pts.length
+        ? base + (sinMatch ? ' Instituciones no identificadas: ' + sinMatch + '.' : '')
+        : 'Las ciudades se marcarán a partir de la universidad indicada por cada firmante.';
+    }
+  }
+
   function pintarColumnas() {
     var lista = $('lista-columnas'), vacio = $('columnas-vacio');
     if (!lista) return;
@@ -572,6 +718,7 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
     pintarBarras(ops, 'disc', 'bars-disc'); pintarBarras(ops, 'inst', 'bars-uni');
     pintarBarras(firmas, 'disc', 'bars-f-disc'); pintarBarras(firmas, 'inst', 'bars-f-uni');
     $('dist-firmas').style.display = firmas.length ? 'flex' : 'none';
+    pintarMapa();
     $('part-vacio').style.display = ops.length ? 'none' : 'block';
     pintarDecl();
   }
@@ -699,6 +846,7 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
   });
 
   pintarColumnas();
+  initMapa();
   if (remoto) {
     cargarColumnas().catch(function () {});
     $('btn-refrescar').style.display = 'inline-flex';

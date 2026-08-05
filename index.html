@@ -76,6 +76,10 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
 .fila-otras{cursor:pointer}
 .fila-otras:hover .etq{color:var(--color-accent-300)}
 .detalle-otras{display:none;flex-direction:column;gap:var(--space-2);margin:2px 0 var(--space-2);padding:var(--space-2) var(--space-3);border-left:2px solid var(--color-accent-800)}
+.btn-like{display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:12px;color:var(--color-neutral-400);background:transparent;border:1px solid var(--color-divider);border-radius:var(--radius-md);padding:4px 10px;cursor:pointer}
+.btn-like:hover{border-color:var(--color-accent);color:var(--color-accent-300)}
+.btn-like svg{width:14px;height:14px;flex:none}
+.btn-like.liked{border-color:var(--color-accent);color:var(--color-accent-300);background:color-mix(in srgb,var(--color-accent) 12%,transparent);cursor:default}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 .form-op{position:sticky;top:84px}
 @media (max-width:720px){
@@ -387,6 +391,10 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
   var COLUMNAS = [
   ];
   var K_COL = 'anid_columnas_pub';
+  var K_LIKES = 'anid_likes_dados';
+  var likedSet = {};
+  (leer(K_LIKES) || []).forEach(function (k) { likedSet[k] = true; });
+  function likeKey(o) { return o.id != null ? 'r' + o.id : 'l' + o.ts; }
   var columnas = [];
   if (!remoto) columnas = Array.isArray(leer(K_COL)) ? leer(K_COL) : [];
   var $ = function (id) { return document.getElementById(id); };
@@ -425,11 +433,13 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
   }
 
   function cargarRemoto() {
+    var qLikes = api('opiniones?select=id,nombre,institucion,disciplina,cargo,texto,creado,likes&order=creado.desc&limit=1000')
+      .catch(function () { return api('opiniones?select=id,nombre,institucion,disciplina,cargo,texto,creado&order=creado.desc&limit=1000'); });
     return Promise.all([
-      api('opiniones?select=nombre,institucion,disciplina,cargo,texto,creado&order=creado.desc&limit=1000'),
+      qLikes,
       api('firmas?select=nombre,institucion,cargo,disciplina,creado&order=creado.desc&limit=2000')
     ]).then(function (res) {
-      ops = (res[0] || []).map(function (o) { return { nombre: o.nombre || '', inst: o.institucion || '', disc: o.disciplina || '', cargo: o.cargo || '', texto: o.texto || '', ts: Date.parse(o.creado) || Date.now() }; });
+      ops = (res[0] || []).map(function (o) { return { id: o.id, nombre: o.nombre || '', inst: o.institucion || '', disc: o.disciplina || '', cargo: o.cargo || '', texto: o.texto || '', likes: o.likes || 0, ts: Date.parse(o.creado) || Date.now() }; });
       firmas = (res[1] || []).map(function (f) { return { nombre: f.nombre || '', inst: f.institucion || '', cargo: f.cargo || '', disc: f.disciplina || '', ts: Date.parse(f.creado) || Date.now() }; });
       $('ops-vacio').textContent = 'Aún no hay opiniones registradas. Sé la primera persona en opinar.';
       $('firmas-vacio').textContent = 'Aún no hay firmantes registrados.';
@@ -453,11 +463,18 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
       var quien = o.nombre ? '<span style="font-size:14px;font-weight:500">' + esc(o.nombre) + '</span>'
         : '<span class="text-muted" style="font-size:14px;font-weight:500;font-style:italic">Anónimo/a</span>';
       var meta = [o.cargo, o.disc, o.inst].filter(Boolean).join(' · ');
+      var k = likeKey(o);
+      var n = o.likes || 0;
+      var ya = !!likedSet[k];
+      var likeBtn = '<button type="button" class="btn-like' + (ya ? ' liked' : '') + '" data-k="' + k + '" aria-pressed="' + ya + '" title="' + (ya ? 'Ya diste tu apoyo a esta opinión' : 'Me gusta') + '">' +
+        '<svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M234,80.12A24,24,0,0,0,216,72H160V56a40,40,0,0,0-40-40,8,8,0,0,0-7.16,4.42L75.06,96H32a16,16,0,0,0-16,16v88a16,16,0,0,0,16,16H204a24,24,0,0,0,23.82-21l12-96A24,24,0,0,0,234,80.12ZM32,112H72v88H32ZM223.94,97l-12,96a8,8,0,0,1-7.94,7H88V105.89l36.71-73.43A24,24,0,0,1,144,56V80a8,8,0,0,0,8,8h64a8,8,0,0,1,7.94,9Z"></path></svg>' +
+        '<span>' + n + '</span></button>';
       return '<article class="card elev-sm" style="padding:var(--space-6)">' +
         '<div style="display:flex;justify-content:space-between;align-items:baseline;gap:var(--space-3);flex-wrap:wrap">' + quien +
         '<span class="card-meta">' + esc(fecha(o.ts)) + '</span></div>' +
         (meta ? '<div style="font-size:12px;color:var(--color-neutral-500)">' + esc(meta) + '</div>' : '') +
-        '<p style="font-size:14.5px;line-height:1.65;white-space:pre-wrap;text-wrap:pretty">' + esc(o.texto) + '</p></article>';
+        '<p style="font-size:14.5px;line-height:1.65;white-space:pre-wrap;text-wrap:pretty">' + esc(o.texto) + '</p>' +
+        '<div style="display:flex;justify-content:flex-end;margin-top:var(--space-2)">' + likeBtn + '</div></article>';
     }).join('');
     $('ops-vacio').style.display = ops.length ? 'none' : 'block';
   }
@@ -587,8 +604,9 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
     }
     if (remoto) {
       var btn = $('btn-opinar'); btn.disabled = true;
-      api('opiniones', { method: 'POST', headers: { 'Prefer': 'return=minimal' }, body: JSON.stringify({ nombre: reg.nombre, institucion: reg.inst, disciplina: reg.disc, cargo: reg.cargo, texto: reg.texto }) })
-        .then(function () {
+      api('opiniones', { method: 'POST', headers: { 'Prefer': 'return=representation' }, body: JSON.stringify({ nombre: reg.nombre, institucion: reg.inst, disciplina: reg.disc, cargo: reg.cargo, texto: reg.texto }) })
+        .then(function (rows) {
+          if (rows && rows[0] && rows[0].id != null) reg.id = rows[0].id;
           ops.unshift(reg);
           if (adhiere) return firmarRemoto(reg.nombre, reg.inst, reg.cargo, reg.disc).catch(function () {});
         })
@@ -601,6 +619,25 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
       if (adhiere) agregarFirma(nombre, reg.inst, reg.cargo, reg.disc);
       exito();
     }
+  });
+
+  $('lista-opiniones').addEventListener('click', function (e) {
+    var btn = e.target && e.target.closest ? e.target.closest('.btn-like') : null;
+    if (!btn) return;
+    var k = btn.getAttribute('data-k');
+    if (likedSet[k]) return;
+    var op = null;
+    for (var i = 0; i < ops.length; i++) { if (likeKey(ops[i]) === k) { op = ops[i]; break; } }
+    if (!op) return;
+    likedSet[k] = true;
+    guardar(K_LIKES, Object.keys(likedSet));
+    op.likes = (op.likes || 0) + 1;
+    if (remoto && op.id != null) {
+      api('rpc/dar_like', { method: 'POST', body: JSON.stringify({ opinion_id: op.id }) }).catch(function () {});
+    } else if (!remoto) {
+      guardar(K_OPS, ops);
+    }
+    pintarOpiniones();
   });
 
   $('btn-firmar').addEventListener('click', function () {

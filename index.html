@@ -298,10 +298,25 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
   <div class="card elev-sm" style="flex-direction:row;flex-wrap:wrap;gap:var(--space-3);align-items:center;padding:var(--space-4)">
     <input id="f-nombre" class="input" type="text" placeholder="Nombre y apellido *" aria-label="Nombre y apellido" style="width:auto;flex:1 1 200px">
     <input id="f-inst" class="input" type="text" placeholder="Institución" aria-label="Institución" style="width:auto;flex:1 1 180px">
-    <input id="f-cargo" class="input" type="text" placeholder="Cargo o disciplina" aria-label="Cargo o disciplina" style="width:auto;flex:1 1 180px">
+    <input id="f-cargo" class="input" type="text" placeholder="Cargo académico" aria-label="Cargo académico" style="width:auto;flex:1 1 160px">
+    <input id="f-disc" class="input" type="text" placeholder="Disciplina o área" aria-label="Disciplina o área" style="width:auto;flex:1 1 160px">
     <button type="button" class="btn btn-primary" id="btn-firmar">Adherir</button>
   </div>
   <div id="nota-firma" style="display:none;font-size:13px;color:var(--color-accent-300)"></div>
+  <div id="dist-firmas" style="display:none;flex-direction:column;gap:var(--space-4);margin-bottom:calc(var(--space-8)*1.5)">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:calc(var(--space-8)*2)">
+      <div style="display:flex;flex-direction:column;gap:var(--space-4)">
+        <div class="accent-mark"></div>
+        <h4>Firmantes por disciplina o área</h4>
+        <div id="bars-f-disc" style="display:flex;flex-direction:column;gap:var(--space-3)"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:var(--space-4)">
+        <div class="accent-mark"></div>
+        <h4>Firmantes por universidad o institución</h4>
+        <div id="bars-f-uni" style="display:flex;flex-direction:column;gap:var(--space-3)"></div>
+      </div>
+    </div>
+  </div>
   <div id="firmas-vacio" class="vacio">Aún no hay firmantes registrados.</div>
   <div id="lista-firmas" style="columns:230px;column-gap:calc(var(--space-8)*1.8)"></div>
 </section>
@@ -402,10 +417,10 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
   function cargarRemoto() {
     return Promise.all([
       api('opiniones?select=nombre,institucion,disciplina,cargo,texto,creado&order=creado.desc&limit=1000'),
-      api('firmas?select=nombre,institucion,cargo,creado&order=creado.desc&limit=2000')
+      api('firmas?select=nombre,institucion,cargo,disciplina,creado&order=creado.desc&limit=2000')
     ]).then(function (res) {
       ops = (res[0] || []).map(function (o) { return { nombre: o.nombre || '', inst: o.institucion || '', disc: o.disciplina || '', cargo: o.cargo || '', texto: o.texto || '', ts: Date.parse(o.creado) || Date.now() }; });
-      firmas = (res[1] || []).map(function (f) { return { nombre: f.nombre || '', inst: f.institucion || '', cargo: f.cargo || '', ts: Date.parse(f.creado) || Date.now() }; });
+      firmas = (res[1] || []).map(function (f) { return { nombre: f.nombre || '', inst: f.institucion || '', cargo: f.cargo || '', disc: f.disciplina || '', ts: Date.parse(f.creado) || Date.now() }; });
       $('ops-vacio').textContent = 'Aún no hay opiniones registradas. Sé la primera persona en opinar.';
       $('firmas-vacio').textContent = 'Aún no hay firmantes registrados.';
       aviso('');
@@ -413,12 +428,12 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
     });
   }
 
-  function firmarRemoto(nombre, inst, cargo) {
+  function firmarRemoto(nombre, inst, cargo, disc) {
     var key = nombre.trim().toLowerCase();
     var dup = firmas.some(function (f) { return String(f.nombre || '').trim().toLowerCase() === key; });
     if (dup) return Promise.reject(new Error('duplicado'));
-    return api('firmas', { method: 'POST', headers: { 'Prefer': 'return=minimal' }, body: JSON.stringify({ nombre: nombre.trim(), institucion: (inst || '').trim(), cargo: (cargo || '').trim() }) })
-      .then(function () { firmas.unshift({ nombre: nombre.trim(), inst: (inst || '').trim(), cargo: (cargo || '').trim(), ts: Date.now() }); });
+    return api('firmas', { method: 'POST', headers: { 'Prefer': 'return=minimal' }, body: JSON.stringify({ nombre: nombre.trim(), institucion: (inst || '').trim(), cargo: (cargo || '').trim(), disciplina: (disc || '').trim() }) })
+      .then(function () { firmas.unshift({ nombre: nombre.trim(), inst: (inst || '').trim(), cargo: (cargo || '').trim(), disc: (disc || '').trim(), ts: Date.now() }); });
   }
 
   function pintarOpiniones() {
@@ -440,7 +455,7 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
   function pintarFirmas() {
     var cont = $('lista-firmas');
     cont.innerHTML = firmas.map(function (f) {
-      var meta = [f.cargo, f.inst].filter(Boolean).join(' · ');
+      var meta = [f.cargo, f.disc, f.inst].filter(Boolean).join(' · ');
       return '<div style="break-inside:avoid;margin-bottom:var(--space-4);border-left:2px solid var(--color-accent-800);padding-left:var(--space-3)">' +
         '<div style="font-size:14px;font-weight:500">' + esc(f.nombre) + '</div>' +
         (meta ? '<div style="font-size:12px;color:var(--color-neutral-500)">' + esc(meta) + '</div>' : '') + '</div>';
@@ -448,9 +463,9 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
     $('firmas-vacio').style.display = firmas.length ? 'none' : 'block';
   }
 
-  function agg(campo) {
+  function agg(lista, campo) {
     var m = {};
-    ops.forEach(function (o) {
+    lista.forEach(function (o) {
       var v = String(o[campo] || '').trim() || 'Sin especificar';
       var k = v.toLowerCase();
       if (!m[k]) m[k] = { label: v, n: 0 };
@@ -462,9 +477,9 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
     return top;
   }
 
-  function pintarBarras(campo, contId) {
-    var datos = agg(campo);
-    var total = ops.length || 1;
+  function pintarBarras(lista, campo, contId) {
+    var datos = agg(lista, campo);
+    var total = lista.length || 1;
     var max = Math.max(1, datos.reduce(function (s, x) { return Math.max(s, x.n); }, 0));
     $(contId).innerHTML = datos.map(function (d) {
       var w = Math.round(d.n / max * 100), pct = Math.round(d.n / total * 100);
@@ -508,17 +523,19 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
     $('c-firmas').textContent = firmas.length;
     $('c-firmas-2').textContent = firmas.length;
     pintarOpiniones(); pintarFirmas();
-    pintarBarras('disc', 'bars-disc'); pintarBarras('inst', 'bars-uni');
+    pintarBarras(ops, 'disc', 'bars-disc'); pintarBarras(ops, 'inst', 'bars-uni');
+    pintarBarras(firmas, 'disc', 'bars-f-disc'); pintarBarras(firmas, 'inst', 'bars-f-uni');
+    $('dist-firmas').style.display = firmas.length ? 'flex' : 'none';
     $('part-vacio').style.display = ops.length ? 'none' : 'block';
     pintarDecl();
   }
 
-  function agregarFirma(nombre, inst, cargo) {
+  function agregarFirma(nombre, inst, cargo, disc) {
     var key = nombre.trim().toLowerCase();
     if (!key) return false;
     var existe = firmas.some(function (f) { return String(f.nombre || '').trim().toLowerCase() === key; });
     if (existe) return false;
-    firmas.unshift({ nombre: nombre.trim(), inst: (inst || '').trim(), cargo: (cargo || '').trim(), ts: Date.now() });
+    firmas.unshift({ nombre: nombre.trim(), inst: (inst || '').trim(), cargo: (cargo || '').trim(), disc: (disc || '').trim(), ts: Date.now() });
     if (!remoto) guardar(K_FIR, firmas);
     return true;
   }
@@ -544,7 +561,7 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
       api('opiniones', { method: 'POST', headers: { 'Prefer': 'return=minimal' }, body: JSON.stringify({ nombre: reg.nombre, institucion: reg.inst, disciplina: reg.disc, cargo: reg.cargo, texto: reg.texto }) })
         .then(function () {
           ops.unshift(reg);
-          if (adhiere) return firmarRemoto(reg.nombre, reg.inst, reg.cargo).catch(function () {});
+          if (adhiere) return firmarRemoto(reg.nombre, reg.inst, reg.cargo, reg.disc).catch(function () {});
         })
         .then(exito)
         .catch(function () { nota('nota-op', 'No se pudo guardar en la base de datos. Revisa tu conexión e intenta nuevamente.'); })
@@ -552,7 +569,7 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
     } else {
       ops.unshift(reg);
       guardar(K_OPS, ops);
-      if (adhiere) agregarFirma(nombre, reg.inst, reg.cargo);
+      if (adhiere) agregarFirma(nombre, reg.inst, reg.cargo, reg.disc);
       exito();
     }
   });
@@ -561,20 +578,20 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
     var nombre = $('f-nombre').value.trim();
     if (!nombre) return nota('nota-firma', 'Indica tu nombre para adherir.');
     function exito() {
-      $('f-nombre').value = ''; $('f-inst').value = ''; $('f-cargo').value = '';
+      $('f-nombre').value = ''; $('f-inst').value = ''; $('f-cargo').value = ''; $('f-disc').value = '';
       pintarTodo();
       nota('nota-firma', 'Tu adhesión quedó registrada. Gracias.');
     }
     if (remoto) {
       var btn = $('btn-firmar'); btn.disabled = true;
-      firmarRemoto(nombre, $('f-inst').value, $('f-cargo').value)
+      firmarRemoto(nombre, $('f-inst').value, $('f-cargo').value, $('f-disc').value)
         .then(exito)
         .catch(function (e) {
           nota('nota-firma', e && e.message === 'duplicado' ? 'Ese nombre ya figura en la lista de firmantes.' : 'No se pudo guardar en la base de datos. Revisa tu conexión e intenta nuevamente.');
         })
         .then(function () { btn.disabled = false; });
     } else {
-      if (!agregarFirma(nombre, $('f-inst').value, $('f-cargo').value)) return nota('nota-firma', 'Ese nombre ya figura en la lista de firmantes.');
+      if (!agregarFirma(nombre, $('f-inst').value, $('f-cargo').value, $('f-disc').value)) return nota('nota-firma', 'Ese nombre ya figura en la lista de firmantes.');
       exito();
     }
   });

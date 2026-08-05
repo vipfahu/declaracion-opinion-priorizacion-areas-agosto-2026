@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La tecnología es la sociedad por otros medios — Declaración pública</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+:root{
+  --color-bg:#161826;--color-surface:#232532;--color-text:#e9e9ed;--color-accent:#9184d9;
+  --color-divider:color-mix(in srgb,#e9e9ed 16%,transparent);
+  --color-neutral-300:#cfd3e5;--color-neutral-400:#b2b6ca;--color-neutral-500:#9397ab;--color-neutral-900:#292b31;
+  --color-accent-200:#e7e5fe;--color-accent-300:#d2cefd;--color-accent-600:#796cbf;--color-accent-800:#423a6a;--color-accent-900:#2b2741;
+  --font-heading:"Inter",system-ui,sans-serif;--font-body:"Inter",system-ui,sans-serif;--font-heading-weight:500;
+  --space-1:2.8px;--space-2:5.6px;--space-3:8.4px;--space-4:11.2px;--space-6:16.8px;--space-8:22.4px;
+  --radius-sm:4px;--radius-md:8px;--radius-lg:14px;
+  --shadow-sm:0 0 0 1px #3f424d;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:var(--font-body);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,h5,h6{font-family:var(--font-heading);font-weight:var(--font-heading-weight);line-height:1.12;letter-spacing:-0.015em;margin:0}
+h1{font-size:42px}h3{font-size:25px}h4{font-size:20px}
+h6{font-size:13px;letter-spacing:0.08em;text-transform:uppercase}
+p{margin:0}
+a{color:var(--color-accent);text-underline-offset:3px}
+a:hover{color:var(--color-accent-300)}
+.text-muted{color:color-mix(in srgb,var(--color-text) 55%,transparent)}
+:focus{outline:none}
+:focus-visible{outline:2px solid var(--color-accent);outline-offset:2px}
+::selection{background:color-mix(in srgb,var(--color-accent) 30%,transparent)}
+summary{list-style:none;cursor:pointer}
+summary::-webkit-details-marker{display:none}
+.hr{height:1px;border:0;margin:0;background:linear-gradient(to right,transparent,var(--color-divider) 48px,var(--color-divider) calc(100% - 48px),transparent)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;text-decoration:none;font-family:var(--font-heading);font-weight:var(--font-heading-weight);font-size:14px;line-height:1.2;color:var(--color-text);background:transparent;border:1px solid transparent;padding:var(--space-2) calc(var(--space-3)*1.2);border-radius:var(--radius-md)}
+.btn:disabled{opacity:0.45;cursor:not-allowed}
+.btn-primary{color:var(--color-accent);border-color:var(--color-accent)}
+.btn-primary:hover{background:color-mix(in srgb,var(--color-accent) 12%,transparent)}
+.btn-primary:active{background:color-mix(in srgb,var(--color-accent) 22%,transparent)}
+.btn-secondary{border-color:var(--color-divider)}
+.btn-secondary:hover{background:color-mix(in srgb,var(--color-text) 7%,transparent)}
+.btn-block{width:100%;margin-top:var(--space-2)}
+.field>label{display:block;font-size:12px;margin-bottom:5px;color:color-mix(in srgb,var(--color-text) 70%,transparent)}
+.input{width:100%;min-height:36px;padding:6px 10px;font:inherit;font-size:14px;color:var(--color-text);caret-color:var(--color-accent);background:var(--color-surface);border:1px solid var(--color-divider);border-radius:var(--radius-md)}
+.input:hover{border-color:color-mix(in srgb,var(--color-text) 45%,transparent)}
+.input:focus-visible{border-color:var(--color-accent);outline-offset:0}
+textarea.input{min-height:90px;resize:vertical}
+.card{display:flex;flex-direction:column;gap:var(--space-2);padding:var(--space-3);border-radius:var(--radius-md);background:var(--color-surface)}
+.card-kicker{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-accent)}
+.card-title{font-family:var(--font-heading);font-weight:var(--font-heading-weight);font-size:17px;line-height:1.2}
+.card-meta{display:flex;align-items:center;gap:6px;font-size:11px;color:color-mix(in srgb,var(--color-text) 50%,transparent)}
+.elev-sm{box-shadow:var(--shadow-sm)}
+.tag{display:inline-flex;align-items:center;font-size:11px;letter-spacing:0.02em;padding:3px 10px;border-radius:calc(var(--radius-md)*0.75)}
+.tag-outline{border:1px solid var(--color-accent);color:var(--color-accent)}
+.nav{display:flex;align-items:center;gap:var(--space-4);padding:var(--space-3) var(--space-4)}
+.nav-brand{font-family:var(--font-heading);font-weight:var(--font-heading-weight);margin-right:auto}
+.nav a{color:inherit;text-decoration:none;font-size:14px}
+.nav a:hover{color:var(--color-accent)}
+.seg{display:inline-flex;overflow:hidden;border:1px solid var(--color-divider);border-radius:var(--radius-md)}
+.seg-opt{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;font-size:13px;cursor:pointer}
+.seg-opt+.seg-opt{border-left:1px solid var(--color-divider)}
+.seg-opt input{position:absolute;opacity:0;width:0;height:0;pointer-events:none}
+.seg-opt:has(input:checked){color:var(--color-accent);box-shadow:inset 0 0 0 1px var(--color-accent)}
+.seg-opt:not(:has(input:checked)):hover{background:color-mix(in srgb,var(--color-text) 7%,transparent)}
+.kicker{color:var(--color-accent)}
+.accent-mark{width:24px;height:2px;background:var(--color-accent)}
+section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:flex;flex-direction:column;gap:var(--space-8)}
+.parrafo{font-size:16.5px;line-height:1.7;text-wrap:pretty}
+.nota-box{font-size:13px;background:var(--color-accent-900);color:var(--color-accent-200);border-radius:var(--radius-md);padding:var(--space-3)}
+.vacio{border:1px dashed var(--color-divider);border-radius:var(--radius-md);padding:calc(var(--space-8)*1.5);text-align:center;font-size:14px;color:var(--color-neutral-500)}
+.fila-barra{display:flex;align-items:center;gap:var(--space-3)}
+.fila-barra .etq{flex:0 0 150px;font-size:12.5px;color:var(--color-neutral-300);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fila-barra .pista{flex:1;height:10px;background:var(--color-neutral-900);border-radius:var(--radius-sm);overflow:hidden}
+.fila-barra .relleno{height:100%;border-radius:var(--radius-sm);background:var(--color-accent-600)}
+.fila-barra .num{flex:0 0 80px;font-size:12px;color:var(--color-neutral-500)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<header style="position:sticky;top:0;z-index:20;background:var(--color-bg)">
+  <div class="nav" style="max-width:1080px;margin:0 auto;flex-wrap:wrap">
+    <div class="nav-brand" style="font-size:13px;letter-spacing:0.1em;text-transform:uppercase">Declaración pública · CCSS · Humanidades · Artes</div>
+    <a href="#declaracion">Declaración</a>
+    <a href="#contexto">Contexto</a>
+    <a href="#opinar">Opiniones</a>
+    <a href="#participacion">Participación</a>
+    <a href="#firmantes">Firmantes</a>
+    <a href="#faq">FAQ</a>
+  </div>
+  <div class="hr"></div>
+</header>
+
+<main style="max-width:1080px;margin:0 auto;padding:0 var(--space-8)">
+
+<section style="padding:calc(var(--space-8)*3.5) 0 calc(var(--space-8)*3);max-width:760px;display:flex;flex-direction:column;gap:var(--space-6);animation:fadeUp 0.7s ease both">
+  <div style="width:44px;height:2px;background:var(--color-accent)"></div>
+  <h6 class="kicker">Declaración pública · Chile · Agosto de 2026</h6>
+  <h1 style="text-wrap:pretty">La tecnología es la sociedad por otros medios.</h1>
+  <p style="font-size:17px;line-height:1.65;color:var(--color-neutral-300);text-wrap:pretty">Frente a la definición de líneas prioritarias de la Agencia Nacional de Investigación y Desarrollo (ANID) que evade la definición explícita de áreas de dedicación exclusiva por parte de las Ciencias Sociales, las Humanidades y las Artes, este espacio reúne una declaración pública y las opiniones de la comunidad académica y ciudadana. Una versión final del comunicado será elaborada integrando el total de las opiniones registradas.</p>
+  <div style="display:flex;gap:var(--space-3);flex-wrap:wrap">
+    <a class="btn btn-primary" href="#opinar">Registrar una opinión</a>
+    <a class="btn btn-secondary" href="#declaracion">Leer la declaración</a>
+  </div>
+  <div class="text-muted" style="font-size:13px"><span id="c-ops">0</span> opiniones · <span id="c-firmas">0</span> adhesiones</div>
+</section>
+
+<div class="hr"></div>
+
+<section id="declaracion" class="bloque">
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--space-4);flex-wrap:wrap;max-width:780px">
+    <h6 class="kicker">01 · La declaración</h6>
+    <div class="seg">
+      <label class="seg-opt"><input type="radio" name="vista-decl" value="original" checked><span>Original</span></label>
+      <label class="seg-opt"><input type="radio" name="vista-decl" value="actualizada"><span>Actualizada con las opiniones</span></label>
+    </div>
+  </div>
+  <div id="vista-original" class="elev-sm" style="background:var(--color-surface);border-radius:var(--radius-lg);padding:calc(var(--space-8)*1.6);max-width:780px;display:flex;flex-direction:column;gap:var(--space-4)">
+    <p class="parrafo" data-decl-p="1">Las comunidades académicas de las Ciencias Sociales, las Humanidades y las Artes manifestamos nuestra profunda preocupación por la decisión de la Agencia Nacional de Investigación y Desarrollo (ANID) de establecer líneas prioritarias de investigación que excluyen a nuestras áreas de conocimiento.</p>
+    <p class="parrafo" data-decl-p="2">Comprender la sociedad no es un complemento del desarrollo científico y tecnológico, ni un aspecto secundario o aplazable, si no su condición de posibilidad. Los desafíos que el propio Estado ha declarado urgentes —la transformación digital, desafíos astronómicos, la crisis climática, el crimen organizdo, minería, entre otros— son, en su origen y en sus consecuencias, fenómenos sociales, culturales y éticos. Ninguna transición tecnológica ocurre al margen de las personas, las instituciones,&nbsp;los sentidos que la sostienen y las prácticas en que adquieren legitimidad y se hacen aprehensibles y domesticables para una determinada sociedad.</p>
+    <p class="parrafo" data-decl-p="3">Una política de investigación que jerarquiza disciplinas por exclusión empobrece el sistema nacional de conocimiento, precariza trayectorias académicas —en especial las de las generaciones jóvenes— y priva al país de la capacidad de reflexionar y comprenderse a sí mismo en el momento en que más lo necesita, cuestión clave y estragégica para la innovación.</p>
+    <p class="parrafo" data-decl-p="4">Solicitamos a ANID y al Ministerio de Ciencia, Tecnología, Conocimiento e Innovación revisar los criterios y el procedimiento con que se definieron estas prioridades, e incorporar a las Ciencias Sociales, las Humanidades y las Artes en pie de igualdad, mediante un proceso deliberativo, transparente y con participación efectiva de las comunidades de investigación.</p>
+    <p style="font-size:14px;line-height:1.6;color:var(--color-neutral-400)">Santiago de Chile, agosto de 2026.<br>Investigadoras e investigadores, académicas y académicos, estudiantes y personas vinculadas a las Ciencias Sociales, las Humanidades y las Artes.</p>
+    <div class="hr"></div>
+    <div style="display:flex;align-items:center;gap:var(--space-6);flex-wrap:wrap">
+      <a class="btn btn-primary" href="#firmantes">Adherir como firmante</a>
+    </div>
+  </div>
+  <div id="vista-actualizada" class="elev-sm" style="display:none;background:var(--color-surface);border-radius:var(--radius-lg);padding:calc(var(--space-8)*1.6);max-width:780px;flex-direction:column;gap:var(--space-4)">
+    <p class="parrafo">Este espacio está reservado para la versión final del comunicado, que será elaborada integrando el total de las opiniones registradas en este sitio.</p>
+    <div class="hr"></div>
+    <p style="font-size:14.5px;line-height:1.65;color:var(--color-neutral-400);text-wrap:pretty">A la fecha se han registrado <strong id="c-ops-3" style="font-weight:600;color:var(--color-accent-300)">0</strong> opiniones, que serán sistematizadas e incorporadas al texto definitivo junto con las adhesiones de firmantes.</p>
+  </div>
+</section>
+
+<div class="hr"></div>
+
+<section id="contexto" class="bloque">
+  <h6 class="kicker">02 · Contexto</h6>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:calc(var(--space-8)*1.5)">
+    <div style="display:flex;flex-direction:column;gap:var(--space-3)">
+      <div class="accent-mark"></div>
+      <h4>Qué decidió ANID</h4>
+      <p style="font-size:14px;line-height:1.65;color:var(--color-neutral-400);text-wrap:pretty">La agencia estableció líneas prioritarias destinadas a orientar sus instrumentos de financiamiento hacia áreas definidas como estratégicas, de carácter científico-tecnológico y productivo. Las Ciencias Sociales, las Humanidades y las Artes no fueron incluidas entre ellas.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:var(--space-3)">
+      <div class="accent-mark"></div>
+      <h4>Por qué preocupa</h4>
+      <p style="font-size:14px;line-height:1.65;color:var(--color-neutral-400);text-wrap:pretty">La priorización condiciona el acceso futuro a fondos concursables y envía una señal de jerarquización del conocimiento. Afecta la continuidad de líneas de investigación, la formación de posgrado y las trayectorias de investigadoras e investigadores jóvenes.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:var(--space-3)">
+      <div class="accent-mark"></div>
+      <h4>Qué solicitamos</h4>
+      <p style="font-size:14px;line-height:1.65;color:var(--color-neutral-400);text-wrap:pretty">Revisión pública de los criterios de priorización, incorporación de las Ciencias Sociales, las Humanidades y las Artes en la definición de prioridades, y garantías de financiamiento equitativo para todas las áreas del conocimiento.</p>
+    </div>
+  </div>
+
+  <figure style="margin:calc(var(--space-8)*1.5) 0 0;display:flex;flex-direction:column;gap:var(--space-6)">
+    <div style="display:flex;flex-direction:column;gap:var(--space-3);max-width:780px">
+      <div class="accent-mark"></div>
+      <h4>Anexo 4 — Áreas prioritarias</h4>
+      <p style="font-size:14px;line-height:1.65;color:var(--color-neutral-400);text-wrap:pretty">Áreas prioritarias definidas por el Ministerio de Ciencia, Tecnología, Conocimiento e Innovación, para la focalización de los concursos de postdoctorado del Fondo Nacional de Desarrollo Científico y Tecnológico. Esta definición busca alinear la formación posdoctoral con los desafíos productivos, sociales y ambientales del país. Las áreas prioritarias definidas son las siguientes:</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:var(--space-3)">
+      <div class="card elev-sm" style="padding:var(--space-4)"><span class="card-kicker">01</span><div class="card-title" style="font-size:15px">Ciencias Naturales y Biomedicina</div><p style="font-size:12.5px;line-height:1.6;color:var(--color-neutral-400)">Biología, genética, genómica, biología molecular, neurociencias, inmunología, microbiología, enfermedades infecciosas, oncología, medicina de precisión, bioinformática, biotecnología, farmacología, salud pública y epidemiología.</p></div>
+      <div class="card elev-sm" style="padding:var(--space-4)"><span class="card-kicker">02</span><div class="card-title" style="font-size:15px">Ingeniería y Tecnologías de Frontera</div><p style="font-size:12.5px;line-height:1.6;color:var(--color-neutral-400)">Inteligencia artificial, aprendizaje automático, ciencia de datos, robótica, automatización, ciberseguridad, computación de alto desempeño, computación cuántica, semiconductores, microelectrónica, fotónica, Internet de las Cosas (IoT), sistemas autónomos, manufactura avanzada, materiales avanzados e infraestructura digital.</p></div>
+      <div class="card elev-sm" style="padding:var(--space-4)"><span class="card-kicker">03</span><div class="card-title" style="font-size:15px">Física, Astronomía e Instrumentación Científica</div><p style="font-size:12.5px;line-height:1.6;color:var(--color-neutral-400)">Astronomía observacional y teórica, astrofísica, cosmología, física experimental y teórica, ingeniería óptica, óptica adaptativa, fotónica, instrumentación astronómica, diseño, integración y operación de instrumentos científicos, detectores y sensores, electrónica e ingeniería de control, procesamiento de datos científicos, computación de alto desempeño y tecnologías para observatorios terrestres y espaciales.</p></div>
+      <div class="card elev-sm" style="padding:var(--space-4)"><span class="card-kicker">04</span><div class="card-title" style="font-size:15px">Espacio, Tecnologías Satelitales y Observación de la Tierra</div><p style="font-size:12.5px;line-height:1.6;color:var(--color-neutral-400)">Ingeniería espacial, diseño, integración y operación de satélites, cargas útiles e instrumentación espacial, sensores remotos, observación de la Tierra, geodesia, navegación y posicionamiento (GNSS), telecomunicaciones satelitales, procesamiento de datos geoespaciales y aplicaciones para agricultura, minería, recursos hídricos, océanos, monitoreo ambiental, prevención y respuesta ante desastres e infraestructura crítica.</p></div>
+      <div class="card elev-sm" style="padding:var(--space-4)"><span class="card-kicker">05</span><div class="card-title" style="font-size:15px">Cambio Climático, Energía y Sustentabilidad</div><p style="font-size:12.5px;line-height:1.6;color:var(--color-neutral-400)">Adaptación y mitigación del cambio climático, energías renovables, almacenamiento de energía, hidrógeno verde y sus derivados, eficiencia energética, captura y almacenamiento de carbono, recursos hídricos, biodiversidad, restauración de ecosistemas, resiliencia y soluciones basadas en la naturaleza.</p></div>
+      <div class="card elev-sm" style="padding:var(--space-4)"><span class="card-kicker">06</span><div class="card-title" style="font-size:15px">Minería y Recursos Estratégicos</div><p style="font-size:12.5px;line-height:1.6;color:var(--color-neutral-400)">Exploración y procesamiento de minerales, minería inteligente, automatización y robótica minera, inteligencia artificial aplicada a minería, metalurgia, cobre, litio y minerales críticos, gestión de relaves, economía circular, descarbonización y tecnologías para una minería sostenible.</p></div>
+      <div class="card elev-sm" style="padding:var(--space-4)"><span class="card-kicker">07</span><div class="card-title" style="font-size:15px">Agroindustria, Agricultura, Sistemas Alimentarios</div><p style="font-size:12.5px;line-height:1.6;color:var(--color-neutral-400)">Agricultura de precisión, biotecnología agrícola, genética y mejoramiento vegetal, sanidad vegetal, riego inteligente, agricultura digital, producción sostenible de alimentos, inocuidad alimentaria, trazabilidad y adaptación al cambio climático.</p></div>
+      <div class="card elev-sm" style="padding:var(--space-4)"><span class="card-kicker">08</span><div class="card-title" style="font-size:15px">Acuicultura, Ciencias del Mar y Bioeconomía Azul</div><p style="font-size:12.5px;line-height:1.6;color:var(--color-neutral-400)">Acuicultura sostenible, salmonicultura, genética y nutrición de especies acuáticas, sanidad acuícola, oceanografía, biotecnología marina, biodiversidad marina, algas, recursos pesqueros, monitoreo oceánico y tecnologías para la producción sostenible de recursos marinos.</p></div>
+      <div class="card elev-sm" style="padding:var(--space-4)"><span class="card-kicker">09</span><div class="card-title" style="font-size:15px">Capital Humano, Productividad y Futuro del Trabajo</div><p style="font-size:12.5px;line-height:1.6;color:var(--color-neutral-400)">Productividad, mercado laboral, desarrollo de capital humano avanzado, educación técnico-profesional, apprenticeships, aprendizaje basado en el trabajo, reconversión laboral, micro credenciales, habilidades para tecnologías emergentes, innovación, adopción tecnológica y evaluación de políticas públicas.</p></div>
+      <div class="card elev-sm" style="padding:var(--space-4)"><span class="card-kicker">10</span><div class="card-title" style="font-size:15px">Seguridad, Justicia y Políticas Públicas</div><p style="font-size:12.5px;line-height:1.6;color:var(--color-neutral-400)">Crimen organizado, narcotráfico, narco cultura, delincuencia, justicia penal, estudios socio jurídicos, prevención del delito, justicia juvenil, sistema penitenciario, reinserción social, ciberseguridad, gestión del riesgo, gobernanza, modernización del Estado y evaluación de políticas públicas.</p></div>
+    </div>
+    <figcaption style="font-size:11px;color:var(--color-neutral-500)">Fuente: Anexo 4, «Áreas prioritarias», Bases del Concurso de Postdoctorado 2027, Fondo Nacional de Desarrollo Científico y Tecnológico (ANID). Texto íntegro del cuerpo del anexo.</figcaption>
+  </figure>
+</section>
+
+<div class="hr"></div>
+
+<section id="opinar" class="bloque">
+  <h6 class="kicker">03 · Opiniones</h6>
+  <div style="display:flex;flex-wrap:wrap;gap:calc(var(--space-8)*1.8);align-items:flex-start">
+    <div class="card elev-sm" style="flex:1 1 340px;max-width:460px;position:sticky;top:84px;padding:var(--space-6);gap:var(--space-4)">
+      <h4>Registra tu opinión</h4>
+      <div class="field">
+        <label for="op-nombre">Nombre <span class="text-muted">(opcional; puedes opinar de forma anónima)</span></label>
+        <input id="op-nombre" class="input" type="text" placeholder="Nombre y apellido">
+      </div>
+      <div class="field">
+        <label for="op-inst">Institución / universidad</label>
+        <input id="op-inst" class="input" type="text" placeholder="Ej.: Universidad de Chile">
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:var(--space-3)">
+        <div class="field">
+          <label for="op-disc">Disciplina o área</label>
+          <input id="op-disc" class="input" type="text" placeholder="Ej.: Sociología">
+        </div>
+        <div class="field">
+          <label for="op-cargo">Cargo académico</label>
+          <input id="op-cargo" class="input" type="text" placeholder="Ej.: Profesora asociada">
+        </div>
+      </div>
+      <div class="field" style="margin:0">
+        <label for="op-texto">Tu opinión</label>
+        <textarea id="op-texto" class="input" rows="5" maxlength="1200" placeholder="Escribe aquí tu opinión sobre las líneas prioritarias de ANID…"></textarea>
+        <div class="text-muted" style="font-size:12px;text-align:right;margin-top:var(--space-1)"><span id="op-chars">0</span> / 1.200</div>
+      </div>
+      <label id="fila-adherir" style="display:none;align-items:flex-start;gap:var(--space-3);font-size:13px;color:var(--color-neutral-300);cursor:pointer">
+        <input id="op-adherir" type="checkbox" checked style="accent-color:var(--color-accent);width:15px;height:15px;margin-top:2px">
+        <span>Registrar también mi adhesión como firmante de la declaración</span>
+      </label>
+      <button type="button" class="btn btn-primary btn-block" id="btn-opinar">Publicar opinión</button>
+      <div id="nota-op" class="nota-box" style="display:none"></div>
+      <div class="text-muted" style="font-size:12px">Tu opinión será visible públicamente en este sitio para el resto de visitantes.</div>
+    </div>
+    <div style="flex:2 1 420px;display:flex;flex-direction:column;gap:var(--space-4)">
+      <div style="display:flex;align-items:baseline;gap:var(--space-4);flex-wrap:wrap">
+        <h3 style="font-size:22px">Opiniones registradas</h3>
+        <span class="tag tag-outline" id="c-ops-tag">0</span>
+      </div>
+      <div id="ops-vacio" class="vacio">Aún no hay opiniones registradas. Sé la primera persona en opinar.</div>
+      <div id="lista-opiniones" style="display:flex;flex-direction:column;gap:var(--space-3)"></div>
+    </div>
+  </div>
+</section>
+
+<div class="hr"></div>
+
+<section id="participacion" class="bloque">
+  <h6 class="kicker">04 · Participación</h6>
+  <p style="max-width:640px;font-size:14.5px;line-height:1.65;color:var(--color-neutral-300);text-wrap:pretty">Proporción de disciplinas o áreas y de universidades presentes en las opiniones registradas. El diagrama se actualiza con cada nueva opinión.</p>
+  <div id="part-vacio" class="vacio">Sin datos aún: el diagrama se construirá con las opiniones que se registren.</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:calc(var(--space-8)*2)">
+    <div style="display:flex;flex-direction:column;gap:var(--space-4)">
+      <div class="accent-mark"></div>
+      <h4>Por disciplina o área</h4>
+      <div id="bars-disc" style="display:flex;flex-direction:column;gap:var(--space-3)"></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:var(--space-4)">
+      <div class="accent-mark"></div>
+      <h4>Por universidad o institución</h4>
+      <div id="bars-uni" style="display:flex;flex-direction:column;gap:var(--space-3)"></div>
+    </div>
+  </div>
+</section>
+
+<div class="hr"></div>
+
+<section id="firmantes" class="bloque" style="gap:var(--space-6)">
+  <h6 class="kicker">05 · Firmantes</h6>
+  <p style="max-width:640px;font-size:14.5px;line-height:1.65;color:var(--color-neutral-300)">Hasta ahora, <strong id="c-firmas-2" style="font-weight:600;color:var(--color-accent-300)">0</strong> personas han adherido a la declaración. Si no deseas escribir una opinión, puedes registrar aquí tu adhesión.</p>
+  <div class="card elev-sm" style="flex-direction:row;flex-wrap:wrap;gap:var(--space-3);align-items:center;padding:var(--space-4)">
+    <input id="f-nombre" class="input" type="text" placeholder="Nombre y apellido *" aria-label="Nombre y apellido" style="width:auto;flex:1 1 200px">
+    <input id="f-inst" class="input" type="text" placeholder="Institución" aria-label="Institución" style="width:auto;flex:1 1 180px">
+    <input id="f-cargo" class="input" type="text" placeholder="Cargo o disciplina" aria-label="Cargo o disciplina" style="width:auto;flex:1 1 180px">
+    <button type="button" class="btn btn-primary" id="btn-firmar">Adherir</button>
+  </div>
+  <div id="nota-firma" style="display:none;font-size:13px;color:var(--color-accent-300)"></div>
+  <div id="firmas-vacio" class="vacio">Aún no hay firmantes registrados.</div>
+  <div id="lista-firmas" style="columns:230px;column-gap:calc(var(--space-8)*1.8)"></div>
+</section>
+
+<div class="hr"></div>
+
+<section id="faq" class="bloque" style="gap:var(--space-4)">
+  <h6 class="kicker">06 · Preguntas frecuentes</h6>
+  <div style="max-width:720px;display:flex;flex-direction:column">
+    <details style="padding:var(--space-4) 0">
+      <summary style="display:flex;justify-content:space-between;align-items:baseline;gap:var(--space-4)"><span style="font-family:var(--font-heading);font-weight:500;font-size:16px">¿Quién puede adherir y opinar?</span><span style="color:var(--color-accent);font-size:18px;line-height:1">+</span></summary>
+      <p style="margin:var(--space-3) 0 0;font-size:14px;line-height:1.65;color:var(--color-neutral-400)">Cualquier persona interesada: académicas y académicos, estudiantes, profesionales y ciudadanía en general. Indicar filiación y disciplina ayuda a dimensionar el alcance de la comunidad afectada, pero no es obligatorio.</p>
+    </details>
+    <div class="hr"></div>
+    <details style="padding:var(--space-4) 0">
+      <summary style="display:flex;justify-content:space-between;align-items:baseline;gap:var(--space-4)"><span style="font-family:var(--font-heading);font-weight:500;font-size:16px">¿Puedo opinar de forma anónima?</span><span style="color:var(--color-accent);font-size:18px;line-height:1">+</span></summary>
+      <p style="margin:var(--space-3) 0 0;font-size:14px;line-height:1.65;color:var(--color-neutral-400)">Sí. El nombre es opcional al registrar una opinión. Las adhesiones a la declaración, en cambio, requieren nombre, pues integran la lista pública de firmantes.</p>
+    </details>
+    <div class="hr"></div>
+    <details style="padding:var(--space-4) 0">
+      <summary style="display:flex;justify-content:space-between;align-items:baseline;gap:var(--space-4)"><span style="font-family:var(--font-heading);font-weight:500;font-size:16px">¿Qué se hará con las opiniones y firmas?</span><span style="color:var(--color-accent);font-size:18px;line-height:1">+</span></summary>
+      <p style="margin:var(--space-3) 0 0;font-size:14px;line-height:1.65;color:var(--color-neutral-400)">Serán sistematizadas y entregadas formalmente a la Dirección Nacional de ANID y al Ministerio de Ciencia, Tecnología, Conocimiento e Innovación, como antecedente del proceso de revisión que la declaración solicita.</p>
+    </details>
+    <div class="hr"></div>
+    <details style="padding:var(--space-4) 0">
+      <summary style="display:flex;justify-content:space-between;align-items:baseline;gap:var(--space-4)"><span style="font-family:var(--font-heading);font-weight:500;font-size:16px">¿Quién organiza esta iniciativa?</span><span style="color:var(--color-accent);font-size:18px;line-height:1">+</span></summary>
+      <p style="margin:var(--space-3) 0 0;font-size:14px;line-height:1.65;color:var(--color-neutral-400)">Una red autoconvocada de investigadoras e investigadores de las Ciencias Sociales, las Humanidades y las Artes de universidades chilenas.</p>
+    </details>
+  </div>
+</section>
+
+<div class="hr"></div>
+
+<section id="contacto" class="bloque" style="gap:var(--space-4)">
+  <h6 class="kicker">07 · Contacto</h6>
+  <p style="max-width:640px;font-size:14.5px;line-height:1.65;color:var(--color-neutral-300)">Para consultas de prensa, gestiones institucionales o para sumar a tu organización, escríbenos a <a href="mailto:viceinvestigacionfahu@usach.cl">viceinvestigacionfahu@usach.cl</a>.</p>
+</section>
+
+</main>
+
+<footer>
+  <div class="hr"></div>
+  <div style="max-width:1080px;margin:0 auto;padding:var(--space-6) var(--space-8) calc(var(--space-8)*2);display:flex;justify-content:space-between;gap:var(--space-4);flex-wrap:wrap;align-items:baseline">
+    <div style="font-size:13px;color:var(--color-neutral-300)">La tecnología es la sociedad por otros medios.</div>
+    <div class="text-muted" style="font-size:12px">Iniciativa de la comunidad de Ciencias Sociales, Humanidades y Artes · Chile, 2026 · Los registros se guardan localmente en tu navegador</div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+  var K_OPS = 'anid_opiniones_pub', K_FIR = 'anid_firmas_pub';
+  var $ = function (id) { return document.getElementById(id); };
+  function leer(k) { try { var v = JSON.parse(localStorage.getItem(k)); return v; } catch (e) { return null; } }
+  function guardar(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  var ops = Array.isArray(leer(K_OPS)) ? leer(K_OPS) : [];
+  var firmas = Array.isArray(leer(K_FIR)) ? leer(K_FIR) : [];
+
+  function esc(t) { var d = document.createElement('div'); d.textContent = t == null ? '' : String(t); return d.innerHTML; }
+  function fecha(ts) { try { return new Intl.DateTimeFormat('es-CL', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(ts)); } catch (e) { return ''; } }
+  function nota(id, msg) {
+    var el = $(id); el.textContent = msg; el.style.display = 'block';
+    clearTimeout(el._t); el._t = setTimeout(function () { el.style.display = 'none'; }, 5000);
+  }
+
+  function pintarOpiniones() {
+    var cont = $('lista-opiniones');
+    var orden = ops.slice().sort(function (a, b) { return b.ts - a.ts; });
+    cont.innerHTML = orden.map(function (o) {
+      var quien = o.nombre ? '<span style="font-size:14px;font-weight:500">' + esc(o.nombre) + '</span>'
+        : '<span class="text-muted" style="font-size:14px;font-weight:500;font-style:italic">Anónimo/a</span>';
+      var meta = [o.cargo, o.disc, o.inst].filter(Boolean).join(' · ');
+      return '<article class="card elev-sm" style="padding:var(--space-6)">' +
+        '<div style="display:flex;justify-content:space-between;align-items:baseline;gap:var(--space-3);flex-wrap:wrap">' + quien +
+        '<span class="card-meta">' + esc(fecha(o.ts)) + '</span></div>' +
+        (meta ? '<div style="font-size:12px;color:var(--color-neutral-500)">' + esc(meta) + '</div>' : '') +
+        '<p style="font-size:14.5px;line-height:1.65;white-space:pre-wrap;text-wrap:pretty">' + esc(o.texto) + '</p></article>';
+    }).join('');
+    $('ops-vacio').style.display = ops.length ? 'none' : 'block';
+  }
+
+  function pintarFirmas() {
+    var cont = $('lista-firmas');
+    cont.innerHTML = firmas.map(function (f) {
+      var meta = [f.cargo, f.inst].filter(Boolean).join(' · ');
+      return '<div style="break-inside:avoid;margin-bottom:var(--space-4);border-left:2px solid var(--color-accent-800);padding-left:var(--space-3)">' +
+        '<div style="font-size:14px;font-weight:500">' + esc(f.nombre) + '</div>' +
+        (meta ? '<div style="font-size:12px;color:var(--color-neutral-500)">' + esc(meta) + '</div>' : '') + '</div>';
+    }).join('');
+    $('firmas-vacio').style.display = firmas.length ? 'none' : 'block';
+  }
+
+  function agg(campo) {
+    var m = {};
+    ops.forEach(function (o) {
+      var v = String(o[campo] || '').trim() || 'Sin especificar';
+      var k = v.toLowerCase();
+      if (!m[k]) m[k] = { label: v, n: 0 };
+      m[k].n++;
+    });
+    var arr = Object.keys(m).map(function (k) { return m[k]; }).sort(function (a, b) { return b.n - a.n; });
+    var top = arr.slice(0, 8), rest = arr.slice(8);
+    if (rest.length) top.push({ label: 'Otras', n: rest.reduce(function (s, x) { return s + x.n; }, 0) });
+    return top;
+  }
+
+  function pintarBarras(campo, contId) {
+    var datos = agg(campo);
+    var total = ops.length || 1;
+    var max = Math.max(1, datos.reduce(function (s, x) { return Math.max(s, x.n); }, 0));
+    $(contId).innerHTML = datos.map(function (d) {
+      var w = Math.round(d.n / max * 100), pct = Math.round(d.n / total * 100);
+      return '<div class="fila-barra"><div class="etq" title="' + esc(d.label) + '">' + esc(d.label) + '</div>' +
+        '<div class="pista"><div class="relleno" style="width:' + w + '%"></div></div>' +
+        '<div class="num">' + d.n + ' · ' + pct + '%</div></div>';
+    }).join('');
+  }
+
+  function pintarDecl() {
+    var el = $('c-ops-3');
+    if (el) el.textContent = ops.length;
+  }
+
+  function pintarTodo() {
+    $('c-ops').textContent = ops.length;
+    $('c-ops-tag').textContent = ops.length;
+    $('c-firmas').textContent = firmas.length;
+    $('c-firmas-2').textContent = firmas.length;
+    pintarOpiniones(); pintarFirmas();
+    pintarBarras('disc', 'bars-disc'); pintarBarras('inst', 'bars-uni');
+    $('part-vacio').style.display = ops.length ? 'none' : 'block';
+    pintarDecl();
+  }
+
+  function agregarFirma(nombre, inst, cargo) {
+    var key = nombre.trim().toLowerCase();
+    if (!key) return false;
+    var existe = firmas.some(function (f) { return String(f.nombre || '').trim().toLowerCase() === key; });
+    if (existe) return false;
+    firmas.unshift({ nombre: nombre.trim(), inst: (inst || '').trim(), cargo: (cargo || '').trim(), ts: Date.now() });
+    guardar(K_FIR, firmas);
+    return true;
+  }
+
+  $('op-nombre').addEventListener('input', function () {
+    $('fila-adherir').style.display = this.value.trim() ? 'flex' : 'none';
+  });
+  $('op-texto').addEventListener('input', function () { $('op-chars').textContent = this.value.length; });
+
+  $('btn-opinar').addEventListener('click', function () {
+    var texto = $('op-texto').value.trim();
+    if (texto.length < 10) return nota('nota-op', 'Escribe tu opinión antes de publicar (mínimo 10 caracteres).');
+    var nombre = $('op-nombre').value.trim();
+    ops.unshift({ nombre: nombre, inst: $('op-inst').value.trim(), disc: $('op-disc').value.trim(), cargo: $('op-cargo').value.trim(), texto: texto.slice(0, 1200), ts: Date.now() });
+    guardar(K_OPS, ops);
+    if (nombre && $('op-adherir').checked) agregarFirma(nombre, $('op-inst').value, $('op-cargo').value);
+    $('op-texto').value = ''; $('op-chars').textContent = '0';
+    pintarTodo();
+    nota('nota-op', 'Tu opinión quedó registrada y ya es visible en la lista. Gracias por participar.');
+  });
+
+  $('btn-firmar').addEventListener('click', function () {
+    var nombre = $('f-nombre').value.trim();
+    if (!nombre) return nota('nota-firma', 'Indica tu nombre para adherir.');
+    if (!agregarFirma(nombre, $('f-inst').value, $('f-cargo').value)) return nota('nota-firma', 'Ese nombre ya figura en la lista de firmantes.');
+    $('f-nombre').value = ''; $('f-inst').value = ''; $('f-cargo').value = '';
+    pintarTodo();
+    nota('nota-firma', 'Tu adhesión quedó registrada. Gracias.');
+  });
+
+  document.querySelectorAll('input[name="vista-decl"]').forEach(function (r) {
+    r.addEventListener('change', function () {
+      var act = this.value === 'actualizada' && this.checked;
+      $('vista-original').style.display = act ? 'none' : 'flex';
+      $('vista-actualizada').style.display = act ? 'flex' : 'none';
+    });
+  });
+
+  pintarTodo();
+})();
+</script>
+</body>
+</html>

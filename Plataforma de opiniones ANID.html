@@ -74,6 +74,20 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
 .fila-barra .relleno{height:100%;border-radius:var(--radius-sm);background:var(--color-accent-600)}
 .fila-barra .num{flex:0 0 80px;font-size:12px;color:var(--color-neutral-500)}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.form-op{position:sticky;top:84px}
+@media (max-width:720px){
+  h1{font-size:clamp(30px,9vw,42px)}
+  h3{font-size:22px}
+  .nav{gap:var(--space-3)}
+  .nav-brand{width:100%}
+  section.bloque{padding:calc(var(--space-8)*2) 0;scroll-margin-top:118px}
+  .form-op{position:static}
+  .input{font-size:16px}
+  .btn{min-height:44px}
+  .seg-opt{padding:8px 10px;font-size:12px}
+  .fila-barra .etq{flex:0 0 96px}
+  .fila-barra .num{flex:0 0 64px}
+}
 </style>
 </head>
 <body>
@@ -90,6 +104,7 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
   </div>
   <div class="hr"></div>
 </header>
+<div id="aviso-conexion" style="display:none;background:var(--color-accent-900);color:var(--color-accent-200);font-size:13px;line-height:1.5;padding:var(--space-3) var(--space-8);text-align:center"></div>
 
 <main style="max-width:1080px;margin:0 auto;padding:0 var(--space-8)">
 
@@ -137,7 +152,7 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
 
 <section id="contexto" class="bloque">
   <h6 class="kicker">02 · Contexto</h6>
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:calc(var(--space-8)*1.5)">
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:calc(var(--space-8)*1.5)">
     <div style="display:flex;flex-direction:column;gap:var(--space-3)">
       <div class="accent-mark"></div>
       <h4>Qué decidió ANID</h4>
@@ -161,7 +176,7 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
       <h4>Anexo 4 — Áreas prioritarias</h4>
       <p style="font-size:14px;line-height:1.65;color:var(--color-neutral-400);text-wrap:pretty">Áreas prioritarias definidas por el Ministerio de Ciencia, Tecnología, Conocimiento e Innovación, para la focalización de los concursos de postdoctorado del Fondo Nacional de Desarrollo Científico y Tecnológico. Esta definición busca alinear la formación posdoctoral con los desafíos productivos, sociales y ambientales del país. Las áreas prioritarias definidas son las siguientes:</p>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:var(--space-3)">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:var(--space-3)">
       <div class="card elev-sm" style="padding:var(--space-4)"><span class="card-kicker">01</span><div class="card-title" style="font-size:15px">Ciencias Naturales y Biomedicina</div><p style="font-size:12.5px;line-height:1.6;color:var(--color-neutral-400)">Biología, genética, genómica, biología molecular, neurociencias, inmunología, microbiología, enfermedades infecciosas, oncología, medicina de precisión, bioinformática, biotecnología, farmacología, salud pública y epidemiología.</p></div>
       <div class="card elev-sm" style="padding:var(--space-4)"><span class="card-kicker">02</span><div class="card-title" style="font-size:15px">Ingeniería y Tecnologías de Frontera</div><p style="font-size:12.5px;line-height:1.6;color:var(--color-neutral-400)">Inteligencia artificial, aprendizaje automático, ciencia de datos, robótica, automatización, ciberseguridad, computación de alto desempeño, computación cuántica, semiconductores, microelectrónica, fotónica, Internet de las Cosas (IoT), sistemas autónomos, manufactura avanzada, materiales avanzados e infraestructura digital.</p></div>
       <div class="card elev-sm" style="padding:var(--space-4)"><span class="card-kicker">03</span><div class="card-title" style="font-size:15px">Física, Astronomía e Instrumentación Científica</div><p style="font-size:12.5px;line-height:1.6;color:var(--color-neutral-400)">Astronomía observacional y teórica, astrofísica, cosmología, física experimental y teórica, ingeniería óptica, óptica adaptativa, fotónica, instrumentación astronómica, diseño, integración y operación de instrumentos científicos, detectores y sensores, electrónica e ingeniería de control, procesamiento de datos científicos, computación de alto desempeño y tecnologías para observatorios terrestres y espaciales.</p></div>
@@ -182,7 +197,7 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
 <section id="opinar" class="bloque">
   <h6 class="kicker">03 · Opiniones</h6>
   <div style="display:flex;flex-wrap:wrap;gap:calc(var(--space-8)*1.8);align-items:flex-start">
-    <div class="card elev-sm" style="flex:1 1 340px;max-width:460px;position:sticky;top:84px;padding:var(--space-6);gap:var(--space-4)">
+    <div class="card elev-sm form-op" style="flex:1 1 340px;max-width:460px;padding:var(--space-6);gap:var(--space-4)">
       <h4>Registra tu opinión</h4>
       <div class="field">
         <label for="op-nombre">Nombre <span class="text-muted">(opcional; puedes opinar de forma anónima)</span></label>
@@ -192,7 +207,7 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
         <label for="op-inst">Institución / universidad</label>
         <input id="op-inst" class="input" type="text" placeholder="Ej.: Universidad de Chile">
       </div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:var(--space-3)">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:var(--space-3)">
         <div class="field">
           <label for="op-disc">Disciplina o área</label>
           <input id="op-disc" class="input" type="text" placeholder="Ej.: Sociología">
@@ -216,9 +231,10 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
       <div class="text-muted" style="font-size:12px">Tu opinión será visible públicamente en este sitio para el resto de visitantes.</div>
     </div>
     <div style="flex:2 1 420px;display:flex;flex-direction:column;gap:var(--space-4)">
-      <div style="display:flex;align-items:baseline;gap:var(--space-4);flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:var(--space-4);flex-wrap:wrap">
         <h3 style="font-size:22px">Opiniones registradas</h3>
         <span class="tag tag-outline" id="c-ops-tag">0</span>
+        <button type="button" class="btn btn-secondary" id="btn-refrescar" style="display:none;margin-left:auto">Actualizar</button>
       </div>
       <div id="ops-vacio" class="vacio">Aún no hay opiniones registradas. Sé la primera persona en opinar.</div>
       <div id="lista-opiniones" style="display:flex;flex-direction:column;gap:var(--space-3)"></div>
@@ -232,7 +248,7 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
   <h6 class="kicker">04 · Participación</h6>
   <p style="max-width:640px;font-size:14.5px;line-height:1.65;color:var(--color-neutral-300);text-wrap:pretty">Proporción de disciplinas o áreas y de universidades presentes en las opiniones registradas. El diagrama se actualiza con cada nueva opinión.</p>
   <div id="part-vacio" class="vacio">Sin datos aún: el diagrama se construirá con las opiniones que se registren.</div>
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:calc(var(--space-8)*2)">
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:calc(var(--space-8)*2)">
     <div style="display:flex;flex-direction:column;gap:var(--space-4)">
       <div class="accent-mark"></div>
       <h4>Por disciplina o área</h4>
@@ -302,25 +318,72 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
   <div class="hr"></div>
   <div style="max-width:1080px;margin:0 auto;padding:var(--space-6) var(--space-8) calc(var(--space-8)*2);display:flex;justify-content:space-between;gap:var(--space-4);flex-wrap:wrap;align-items:baseline">
     <div style="font-size:13px;color:var(--color-neutral-300)">La tecnología es la sociedad por otros medios.</div>
-    <div class="text-muted" style="font-size:12px">Iniciativa de la comunidad de Ciencias Sociales, Humanidades y Artes · Chile, 2026 · Los registros se guardan localmente en tu navegador</div>
+    <div class="text-muted" id="nota-almacen" style="font-size:12px">Iniciativa de la comunidad de Ciencias Sociales, Humanidades y Artes · Chile, 2026 · Los registros se guardan localmente en tu navegador</div>
   </div>
 </footer>
 
 <script>
 (function () {
   'use strict';
+  var SUPA_URL = 'https://hnrngrwpcsqpszyhhlys.supabase.co';
+  var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhucm5ncndwY3NxcHN6eWhobHlzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU4ODAxODksImV4cCI6MjEwMTQ1NjE4OX0.cGGtQf5q5PUvoVE6j7dXxy9Ik17R8yJd_4qQan27HJI';
+  var remoto = !!SUPA_KEY && SUPA_KEY.indexOf('PEGA_') !== 0;
   var K_OPS = 'anid_opiniones_pub', K_FIR = 'anid_firmas_pub';
   var $ = function (id) { return document.getElementById(id); };
   function leer(k) { try { var v = JSON.parse(localStorage.getItem(k)); return v; } catch (e) { return null; } }
   function guardar(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
-  var ops = Array.isArray(leer(K_OPS)) ? leer(K_OPS) : [];
-  var firmas = Array.isArray(leer(K_FIR)) ? leer(K_FIR) : [];
+  var ops = [], firmas = [];
+  if (!remoto) {
+    ops = Array.isArray(leer(K_OPS)) ? leer(K_OPS) : [];
+    firmas = Array.isArray(leer(K_FIR)) ? leer(K_FIR) : [];
+  }
 
   function esc(t) { var d = document.createElement('div'); d.textContent = t == null ? '' : String(t); return d.innerHTML; }
   function fecha(ts) { try { return new Intl.DateTimeFormat('es-CL', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(ts)); } catch (e) { return ''; } }
   function nota(id, msg) {
     var el = $(id); el.textContent = msg; el.style.display = 'block';
     clearTimeout(el._t); el._t = setTimeout(function () { el.style.display = 'none'; }, 5000);
+  }
+
+  function aviso(msg) {
+    var el = $('aviso-conexion');
+    if (!el) return;
+    if (!msg) { el.style.display = 'none'; return; }
+    el.textContent = msg; el.style.display = 'block';
+  }
+
+  function api(ruta, opts) {
+    opts = opts || {};
+    var headers = { apikey: SUPA_KEY, Authorization: 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json' };
+    if (opts.headers) { for (var k in opts.headers) headers[k] = opts.headers[k]; }
+    opts.headers = headers;
+    return fetch(SUPA_URL + '/rest/v1/' + ruta, opts).then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      var ct = r.headers.get('content-type') || '';
+      return ct.indexOf('json') >= 0 ? r.json() : null;
+    });
+  }
+
+  function cargarRemoto() {
+    return Promise.all([
+      api('opiniones?select=nombre,institucion,disciplina,cargo,texto,creado&order=creado.desc&limit=1000'),
+      api('firmas?select=nombre,institucion,cargo,creado&order=creado.desc&limit=2000')
+    ]).then(function (res) {
+      ops = (res[0] || []).map(function (o) { return { nombre: o.nombre || '', inst: o.institucion || '', disc: o.disciplina || '', cargo: o.cargo || '', texto: o.texto || '', ts: Date.parse(o.creado) || Date.now() }; });
+      firmas = (res[1] || []).map(function (f) { return { nombre: f.nombre || '', inst: f.institucion || '', cargo: f.cargo || '', ts: Date.parse(f.creado) || Date.now() }; });
+      $('ops-vacio').textContent = 'Aún no hay opiniones registradas. Sé la primera persona en opinar.';
+      $('firmas-vacio').textContent = 'Aún no hay firmantes registrados.';
+      aviso('');
+      pintarTodo();
+    });
+  }
+
+  function firmarRemoto(nombre, inst, cargo) {
+    var key = nombre.trim().toLowerCase();
+    var dup = firmas.some(function (f) { return String(f.nombre || '').trim().toLowerCase() === key; });
+    if (dup) return Promise.reject(new Error('duplicado'));
+    return api('firmas', { method: 'POST', headers: { 'Prefer': 'return=minimal' }, body: JSON.stringify({ nombre: nombre.trim(), institucion: (inst || '').trim(), cargo: (cargo || '').trim() }) })
+      .then(function () { firmas.unshift({ nombre: nombre.trim(), inst: (inst || '').trim(), cargo: (cargo || '').trim(), ts: Date.now() }); });
   }
 
   function pintarOpiniones() {
@@ -398,7 +461,7 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
     var existe = firmas.some(function (f) { return String(f.nombre || '').trim().toLowerCase() === key; });
     if (existe) return false;
     firmas.unshift({ nombre: nombre.trim(), inst: (inst || '').trim(), cargo: (cargo || '').trim(), ts: Date.now() });
-    guardar(K_FIR, firmas);
+    if (!remoto) guardar(K_FIR, firmas);
     return true;
   }
 
@@ -411,21 +474,51 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
     var texto = $('op-texto').value.trim();
     if (texto.length < 10) return nota('nota-op', 'Escribe tu opinión antes de publicar (mínimo 10 caracteres).');
     var nombre = $('op-nombre').value.trim();
-    ops.unshift({ nombre: nombre, inst: $('op-inst').value.trim(), disc: $('op-disc').value.trim(), cargo: $('op-cargo').value.trim(), texto: texto.slice(0, 1200), ts: Date.now() });
-    guardar(K_OPS, ops);
-    if (nombre && $('op-adherir').checked) agregarFirma(nombre, $('op-inst').value, $('op-cargo').value);
-    $('op-texto').value = ''; $('op-chars').textContent = '0';
-    pintarTodo();
-    nota('nota-op', 'Tu opinión quedó registrada y ya es visible en la lista. Gracias por participar.');
+    var reg = { nombre: nombre, inst: $('op-inst').value.trim(), disc: $('op-disc').value.trim(), cargo: $('op-cargo').value.trim(), texto: texto.slice(0, 1200), ts: Date.now() };
+    var adhiere = nombre && $('op-adherir').checked;
+    function exito() {
+      $('op-texto').value = ''; $('op-chars').textContent = '0';
+      pintarTodo();
+      nota('nota-op', 'Tu opinión quedó registrada y ya es visible en la lista. Gracias por participar.');
+    }
+    if (remoto) {
+      var btn = $('btn-opinar'); btn.disabled = true;
+      api('opiniones', { method: 'POST', headers: { 'Prefer': 'return=minimal' }, body: JSON.stringify({ nombre: reg.nombre, institucion: reg.inst, disciplina: reg.disc, cargo: reg.cargo, texto: reg.texto }) })
+        .then(function () {
+          ops.unshift(reg);
+          if (adhiere) return firmarRemoto(reg.nombre, reg.inst, reg.cargo).catch(function () {});
+        })
+        .then(exito)
+        .catch(function () { nota('nota-op', 'No se pudo guardar en la base de datos. Revisa tu conexión e intenta nuevamente.'); })
+        .then(function () { btn.disabled = false; });
+    } else {
+      ops.unshift(reg);
+      guardar(K_OPS, ops);
+      if (adhiere) agregarFirma(nombre, reg.inst, reg.cargo);
+      exito();
+    }
   });
 
   $('btn-firmar').addEventListener('click', function () {
     var nombre = $('f-nombre').value.trim();
     if (!nombre) return nota('nota-firma', 'Indica tu nombre para adherir.');
-    if (!agregarFirma(nombre, $('f-inst').value, $('f-cargo').value)) return nota('nota-firma', 'Ese nombre ya figura en la lista de firmantes.');
-    $('f-nombre').value = ''; $('f-inst').value = ''; $('f-cargo').value = '';
-    pintarTodo();
-    nota('nota-firma', 'Tu adhesión quedó registrada. Gracias.');
+    function exito() {
+      $('f-nombre').value = ''; $('f-inst').value = ''; $('f-cargo').value = '';
+      pintarTodo();
+      nota('nota-firma', 'Tu adhesión quedó registrada. Gracias.');
+    }
+    if (remoto) {
+      var btn = $('btn-firmar'); btn.disabled = true;
+      firmarRemoto(nombre, $('f-inst').value, $('f-cargo').value)
+        .then(exito)
+        .catch(function (e) {
+          nota('nota-firma', e && e.message === 'duplicado' ? 'Ese nombre ya figura en la lista de firmantes.' : 'No se pudo guardar en la base de datos. Revisa tu conexión e intenta nuevamente.');
+        })
+        .then(function () { btn.disabled = false; });
+    } else {
+      if (!agregarFirma(nombre, $('f-inst').value, $('f-cargo').value)) return nota('nota-firma', 'Ese nombre ya figura en la lista de firmantes.');
+      exito();
+    }
   });
 
   document.querySelectorAll('input[name="vista-decl"]').forEach(function (r) {
@@ -436,7 +529,27 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
     });
   });
 
-  pintarTodo();
+  if (remoto) {
+    $('btn-refrescar').style.display = 'inline-flex';
+    $('btn-refrescar').addEventListener('click', function () {
+      cargarRemoto().catch(function () { nota('nota-op', 'No se pudo actualizar desde la base de datos.'); });
+    });
+    $('ops-vacio').textContent = 'Cargando opiniones…';
+    $('firmas-vacio').textContent = 'Cargando firmantes…';
+    var na = $('nota-almacen');
+    if (na) na.textContent = 'Iniciativa de la comunidad de Ciencias Sociales, Humanidades y Artes · Chile, 2026 · Los registros se sincronizan con una base de datos pública';
+    pintarTodo();
+    cargarRemoto().catch(function () {
+      aviso('No fue posible conectar con la base de datos. Verifica la configuración; mientras tanto, los registros solo se guardan en este navegador.');
+      remoto = false;
+      ops = Array.isArray(leer(K_OPS)) ? leer(K_OPS) : [];
+      firmas = Array.isArray(leer(K_FIR)) ? leer(K_FIR) : [];
+      pintarTodo();
+    });
+  } else {
+    aviso('Configuración pendiente: falta la clave pública (anon key) de Supabase. Por ahora los registros solo se guardan en este navegador.');
+    pintarTodo();
+  }
 })();
 </script>
 </body>

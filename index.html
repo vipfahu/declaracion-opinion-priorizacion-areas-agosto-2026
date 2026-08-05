@@ -87,6 +87,7 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
   .seg-opt{padding:8px 10px;font-size:12px}
   .fila-barra .etq{flex:0 0 96px}
   .fila-barra .num{flex:0 0 64px}
+  .aside-columnas{max-width:none}
 }
 </style>
 </head>
@@ -94,7 +95,7 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
 
 <header style="position:sticky;top:0;z-index:20;background:var(--color-bg)">
   <div class="nav" style="max-width:1080px;margin:0 auto;flex-wrap:wrap">
-    <div class="nav-brand" style="font-size:13px;letter-spacing:0.1em;text-transform:uppercase">Declaración pública · CCSS · Humanidades · Artes</div>
+    <div class="nav-brand" style="font-size:13px;letter-spacing:0.1em;text-transform:uppercase">Declaración pública · Ciencias Sociales · Humanidades · Artes</div>
     <a href="#declaracion">Declaración</a>
     <a href="#contexto">Contexto</a>
     <a href="#opinar">Opiniones</a>
@@ -111,7 +112,7 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
 <section style="padding:calc(var(--space-8)*3.5) 0 calc(var(--space-8)*3);max-width:760px;display:flex;flex-direction:column;gap:var(--space-6);animation:fadeUp 0.7s ease both">
   <div style="width:44px;height:2px;background:var(--color-accent)"></div>
   <h6 class="kicker">Declaración pública · Chile · Agosto de 2026</h6>
-  <h1 style="text-wrap:pretty">La tecnología es la sociedad por otros medios.</h1>
+  <h1 style="text-wrap:pretty">La tecnología es la sociedad por otros medios</h1>
   <p style="font-size:17px;line-height:1.65;color:var(--color-neutral-300);text-wrap:pretty">Frente a la definición de líneas prioritarias de la Agencia Nacional de Investigación y Desarrollo (ANID) que evade la definición explícita de áreas de dedicación exclusiva por parte de las Ciencias Sociales, las Humanidades y las Artes, este espacio reúne una declaración pública y las opiniones de la comunidad académica y ciudadana. Una versión final del comunicado será elaborada integrando el total de las opiniones registradas.</p>
   <div style="display:flex;gap:var(--space-3);flex-wrap:wrap">
     <a class="btn btn-primary" href="#opinar">Registrar una opinión</a>
@@ -130,10 +131,12 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
       <label class="seg-opt"><input type="radio" name="vista-decl" value="actualizada"><span>Actualizada con las opiniones</span></label>
     </div>
   </div>
-  <div id="vista-original" class="elev-sm" style="background:var(--color-surface);border-radius:var(--radius-lg);padding:calc(var(--space-8)*1.6);max-width:780px;display:flex;flex-direction:column;gap:var(--space-4)">
+  <div style="display:flex;flex-wrap:wrap;gap:calc(var(--space-8)*1.6);align-items:flex-start">
+  <div style="flex:999 1 480px;max-width:780px;display:flex;flex-direction:column;gap:var(--space-8)">
+  <div id="vista-original" class="elev-sm" style="background:var(--color-surface);border-radius:var(--radius-lg);padding:calc(var(--space-8)*1.6);display:flex;flex-direction:column;gap:var(--space-4)">
     <p class="parrafo" data-decl-p="1">Las comunidades académicas de las Ciencias Sociales, las Humanidades y las Artes manifestamos nuestra profunda preocupación por la decisión de la Agencia Nacional de Investigación y Desarrollo (ANID) de establecer líneas prioritarias de investigación que excluyen a nuestras áreas de conocimiento.</p>
-    <p class="parrafo" data-decl-p="2">Comprender la sociedad no es un complemento del desarrollo científico y tecnológico, ni un aspecto secundario o aplazable, si no su condición de posibilidad. Los desafíos que el propio Estado ha declarado urgentes —la transformación digital, desafíos astronómicos, la crisis climática, el crimen organizdo, minería, entre otros— son, en su origen y en sus consecuencias, fenómenos sociales, culturales y éticos. Ninguna transición tecnológica ocurre al margen de las personas, las instituciones,&nbsp;los sentidos que la sostienen y las prácticas en que adquieren legitimidad y se hacen aprehensibles y domesticables para una determinada sociedad.</p>
-    <p class="parrafo" data-decl-p="3">Una política de investigación que jerarquiza disciplinas por exclusión empobrece el sistema nacional de conocimiento, precariza trayectorias académicas —en especial las de las generaciones jóvenes— y priva al país de la capacidad de reflexionar y comprenderse a sí mismo en el momento en que más lo necesita, cuestión clave y estragégica para la innovación.</p>
+    <p class="parrafo" data-decl-p="2">Comprender la sociedad y la subjetividad no es un complemento del desarrollo científico y tecnológico, ni un aspecto secundario o aplazable, si no su condición de posibilidad. Los desafíos que el propio Estado ha declarado urgentes -la transformación digital, desafíos astronómicos, la crisis climática, el crimen organizado, minería, entre otros- son, en su origen y en sus consecuencias, fenómenos sociales, culturales, políticos y éticos. Ninguna transición tecnológica ocurre al margen de las personas, las instituciones,&nbsp;los sentidos que la sostienen y las prácticas en que adquieren legitimidad y se hacen aprehensibles y domesticables para un determinado colectivo.</p>
+    <p class="parrafo" data-decl-p="3">Una política de investigación que jerarquiza disciplinas por exclusión empobrece el sistema nacional de conocimiento, precariza trayectorias académicas -en especial las de las generaciones jóvenes- y priva al país de la capacidad de reflexionar y comprenderse a sí mismo en el momento en que más lo necesita, cuestión clave y estratégica para la innovación. Sobre todo, coarta una condición específica para desarrollo y transformación social y tecnocientífica: la creación.</p>
     <p class="parrafo" data-decl-p="4">Solicitamos a ANID y al Ministerio de Ciencia, Tecnología, Conocimiento e Innovación revisar los criterios y el procedimiento con que se definieron estas prioridades, e incorporar a las Ciencias Sociales, las Humanidades y las Artes en pie de igualdad, mediante un proceso deliberativo, transparente y con participación efectiva de las comunidades de investigación.</p>
     <p style="font-size:14px;line-height:1.6;color:var(--color-neutral-400)">Santiago de Chile, agosto de 2026.<br>Investigadoras e investigadores, académicas y académicos, estudiantes y personas vinculadas a las Ciencias Sociales, las Humanidades y las Artes.</p>
     <div class="hr"></div>
@@ -141,10 +144,35 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
       <a class="btn btn-primary" href="#firmantes">Adherir como firmante</a>
     </div>
   </div>
-  <div id="vista-actualizada" class="elev-sm" style="display:none;background:var(--color-surface);border-radius:var(--radius-lg);padding:calc(var(--space-8)*1.6);max-width:780px;flex-direction:column;gap:var(--space-4)">
+  <div id="vista-actualizada" class="elev-sm" style="display:none;background:var(--color-surface);border-radius:var(--radius-lg);padding:calc(var(--space-8)*1.6);flex-direction:column;gap:var(--space-4)">
     <p class="parrafo">Este espacio está reservado para la versión final del comunicado, que será elaborada integrando el total de las opiniones registradas en este sitio.</p>
     <div class="hr"></div>
     <p style="font-size:14.5px;line-height:1.65;color:var(--color-neutral-400);text-wrap:pretty">A la fecha se han registrado <strong id="c-ops-3" style="font-weight:600;color:var(--color-accent-300)">0</strong> opiniones, que serán sistematizadas e incorporadas al texto definitivo junto con las adhesiones de firmantes.</p>
+  </div>
+  </div>
+  <aside class="aside-columnas" style="flex:1 1 240px;max-width:340px;display:flex;flex-direction:column;gap:var(--space-4)">
+    <div class="accent-mark"></div>
+    <h4>Otras columnas relacionadas</h4>
+    <div id="columnas-vacio" class="text-muted" style="font-size:13px;line-height:1.6">Aún no hay columnas enlazadas. Sé la primera persona en compartir una.</div>
+    <div id="lista-columnas" style="display:flex;flex-direction:column;gap:var(--space-4)"></div>
+    <div class="card elev-sm" style="padding:var(--space-4);gap:var(--space-3)">
+      <div style="font-family:var(--font-heading);font-weight:500;font-size:14px">Comparte una columna</div>
+      <div class="field" style="margin:0">
+        <label for="col-titulo">Título de la columna</label>
+        <input id="col-titulo" class="input" type="text" maxlength="180" placeholder="Ej.: Ciencia sin humanidades">
+      </div>
+      <div class="field" style="margin:0">
+        <label for="col-autor">Autor o autora</label>
+        <input id="col-autor" class="input" type="text" maxlength="120" placeholder="Nombre de quien firma la columna">
+      </div>
+      <div class="field" style="margin:0">
+        <label for="col-url">Enlace</label>
+        <input id="col-url" class="input" type="url" maxlength="500" placeholder="https://…">
+      </div>
+      <button type="button" class="btn btn-primary" id="btn-columna">Registrar columna</button>
+      <div id="nota-columna" style="display:none;font-size:12.5px;color:var(--color-accent-300);line-height:1.5"></div>
+    </div>
+  </aside>
   </div>
 </section>
 
@@ -329,6 +357,13 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
   var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhucm5ncndwY3NxcHN6eWhobHlzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU4ODAxODksImV4cCI6MjEwMTQ1NjE4OX0.cGGtQf5q5PUvoVE6j7dXxy9Ik17R8yJd_4qQan27HJI';
   var remoto = !!SUPA_KEY && SUPA_KEY.indexOf('PEGA_') !== 0;
   var K_OPS = 'anid_opiniones_pub', K_FIR = 'anid_firmas_pub';
+  // «Otras columnas relacionadas»: además de las registradas por usuarios, puedes fijar entradas aquí.
+  // Formato: { titulo: 'Título de la columna', autor: 'Autor o autora', url: 'https://…' },
+  var COLUMNAS = [
+  ];
+  var K_COL = 'anid_columnas_pub';
+  var columnas = [];
+  if (!remoto) columnas = Array.isArray(leer(K_COL)) ? leer(K_COL) : [];
   var $ = function (id) { return document.getElementById(id); };
   function leer(k) { try { var v = JSON.parse(localStorage.getItem(k)); return v; } catch (e) { return null; } }
   function guardar(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
@@ -439,6 +474,29 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
     }).join('');
   }
 
+  function pintarColumnas() {
+    var lista = $('lista-columnas'), vacio = $('columnas-vacio');
+    if (!lista) return;
+    var items = columnas.concat(COLUMNAS);
+    var ok = items.filter(function (c) { return c && c.titulo && /^https?:\/\//i.test(String(c.url || '')); });
+    lista.innerHTML = ok.map(function (c) {
+      var href = esc(String(c.url)).replace(/"/g, '&quot;');
+      var sub = c.autor || c.medio || '';
+      return '<div style="border-left:2px solid var(--color-accent-800);padding-left:var(--space-3)">' +
+        '<a href="' + href + '" target="_blank" rel="noopener" style="font-size:14px;font-weight:500;line-height:1.45;display:inline-block">' + esc(c.titulo) + '</a>' +
+        (sub ? '<div style="font-size:12px;color:var(--color-neutral-500);margin-top:2px">' + esc(sub) + '</div>' : '') + '</div>';
+    }).join('');
+    vacio.style.display = ok.length ? 'none' : 'block';
+  }
+
+  function cargarColumnas() {
+    return api('columnas?select=titulo,autor,url,creado&order=creado.desc&limit=200')
+      .then(function (rows) {
+        columnas = (rows || []).map(function (c) { return { titulo: c.titulo || '', autor: c.autor || '', url: c.url || '', ts: Date.parse(c.creado) || Date.now() }; });
+        pintarColumnas();
+      });
+  }
+
   function pintarDecl() {
     var el = $('c-ops-3');
     if (el) el.textContent = ops.length;
@@ -529,7 +587,37 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
     });
   });
 
+  $('btn-columna').addEventListener('click', function () {
+    var titulo = $('col-titulo').value.trim();
+    var autor = $('col-autor').value.trim();
+    var url = $('col-url').value.trim();
+    if (url && !/^https?:\/\//i.test(url)) url = 'https://' + url;
+    if (!titulo) return nota('nota-columna', 'Indica el título de la columna.');
+    if (!/^https?:\/\/[^\s]+\.[^\s]{2,}/i.test(url)) return nota('nota-columna', 'Indica un enlace válido (https://…).');
+    var dup = columnas.concat(COLUMNAS).some(function (c) { return String(c.url || '').trim() === url; });
+    if (dup) return nota('nota-columna', 'Ese enlace ya figura en la lista.');
+    var reg = { titulo: titulo.slice(0, 180), autor: autor.slice(0, 120), url: url.slice(0, 500), ts: Date.now() };
+    function exito() {
+      $('col-titulo').value = ''; $('col-autor').value = ''; $('col-url').value = '';
+      pintarColumnas();
+      nota('nota-columna', 'La columna quedó registrada y ya es visible en la lista. Gracias.');
+    }
+    if (remoto) {
+      var btn = $('btn-columna'); btn.disabled = true;
+      api('columnas', { method: 'POST', headers: { 'Prefer': 'return=minimal' }, body: JSON.stringify({ titulo: reg.titulo, autor: reg.autor, url: reg.url }) })
+        .then(function () { columnas.unshift(reg); exito(); })
+        .catch(function () { nota('nota-columna', 'No se pudo guardar en la base de datos. Verifica que la tabla «columnas» exista e intenta nuevamente.'); })
+        .then(function () { btn.disabled = false; });
+    } else {
+      columnas.unshift(reg);
+      guardar(K_COL, columnas);
+      exito();
+    }
+  });
+
+  pintarColumnas();
   if (remoto) {
+    cargarColumnas().catch(function () {});
     $('btn-refrescar').style.display = 'inline-flex';
     $('btn-refrescar').addEventListener('click', function () {
       cargarRemoto().catch(function () { nota('nota-op', 'No se pudo actualizar desde la base de datos.'); });

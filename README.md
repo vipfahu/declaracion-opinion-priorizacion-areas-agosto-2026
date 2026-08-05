@@ -22,6 +22,12 @@ Cada vez que edites `index.html` y hagas *commit*, el sitio se actualiza solo.
 - Para moderar o exportar registros: panel de Supabase → *Table Editor*.
 - Si la conexión falla, el sitio lo indica con un aviso y sigue funcionando en modo local (solo ese navegador).
 
+## Otras columnas relacionadas
+
+Junto a la declaración hay un espacio donde cualquier visitante puede registrar una columna de prensa (título, autor/a y enlace), visible para el resto. Requiere la tabla `columnas` en Supabase (SQL más abajo). También puedes fijar entradas editando la lista `var COLUMNAS` en el `<script>` de `index.html`.
+
+Para moderar (editar o borrar columnas registradas): panel de Supabase → *Table Editor* → `columnas`.
+
 ## Estructura del sitio
 
 Declaración (original y espacio reservado para la versión final) · Contexto con el Anexo 4 íntegro (áreas prioritarias) · Registro y muro de opiniones · Diagrama de participación por disciplina y universidad · Firmantes · Preguntas frecuentes · Contacto.

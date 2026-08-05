@@ -80,6 +80,10 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
 .btn-like:hover{border-color:var(--color-accent);color:var(--color-accent-300)}
 .btn-like svg{width:14px;height:14px;flex:none}
 .btn-like.liked{border-color:var(--color-accent);color:var(--color-accent-300);background:color-mix(in srgb,var(--color-accent) 12%,transparent);cursor:default}
+.ciudad-mapa .n-firmas{opacity:0;transition:opacity 0.15s ease}
+.ciudad-mapa:hover .n-firmas,.ciudad-mapa:focus .n-firmas{opacity:1}
+.ciudad-mapa:hover circle,.ciudad-mapa:focus circle{fill-opacity:0.85}
+.ciudad-mapa:focus{outline:none}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 .form-op{position:sticky;top:84px}
 @media (max-width:720px){
@@ -666,10 +670,11 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
     pts.forEach(function (p) { p.ly = Math.max(p.y + 3, ly + 12); ly = p.ly; });
     pts.forEach(function (p) {
       var r = Math.min(11, 3 + 2.2 * Math.sqrt(p.n));
-      dots += '<circle cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) + '" r="' + r.toFixed(1) + '" fill="var(--color-accent-600)" fill-opacity="0.55" stroke="var(--color-accent-300)" stroke-width="1"><title>' + esc(p.c) + ': ' + p.n + (p.n === 1 ? ' firmante' : ' firmantes') + '</title></circle>';
+      var g = '<circle cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) + '" r="' + r.toFixed(1) + '" fill="var(--color-accent-600)" fill-opacity="0.55" stroke="var(--color-accent-300)" stroke-width="1"></circle>';
       var lx = p.x + r + 5;
-      if (Math.abs(p.ly - p.y) > 5) dots += '<line x1="' + (p.x + r + 1).toFixed(1) + '" y1="' + p.y.toFixed(1) + '" x2="' + (lx - 2).toFixed(1) + '" y2="' + (p.ly - 3).toFixed(1) + '" stroke="var(--color-divider)" stroke-width="1"></line>';
-      labels += '<text x="' + lx.toFixed(1) + '" y="' + p.ly.toFixed(1) + '" font-size="10" fill="var(--color-neutral-400)">' + esc(p.c) + ' <tspan fill="var(--color-accent-300)">' + p.n + '</tspan></text>';
+      if (Math.abs(p.ly - p.y) > 5) g += '<line x1="' + (p.x + r + 1).toFixed(1) + '" y1="' + p.y.toFixed(1) + '" x2="' + (lx - 2).toFixed(1) + '" y2="' + (p.ly - 3).toFixed(1) + '" stroke="var(--color-divider)" stroke-width="1"></line>';
+      g += '<text x="' + lx.toFixed(1) + '" y="' + p.ly.toFixed(1) + '" font-size="10" fill="var(--color-neutral-400)">' + esc(p.c) + ' <tspan class="n-firmas" fill="var(--color-accent-300)">' + p.n + '</tspan></text>';
+      labels += '<g class="ciudad-mapa" tabindex="0" role="img" aria-label="' + esc(p.c) + ': ' + p.n + (p.n === 1 ? ' firmante' : ' firmantes') + '"><title>' + esc(p.c) + ': ' + p.n + (p.n === 1 ? ' firmante' : ' firmantes') + '</title>' + g + '</g>';
     });
     cont.innerHTML = '<svg viewBox="0 0 ' + MAPA_W + ' ' + MAPA_H + '" width="100%" style="max-width:' + MAPA_W + 'px" role="img" aria-label="Mapa de Chile con las ciudades de las universidades de las personas firmantes">' +
       '<path d="' + dChile + '" fill="var(--color-neutral-900)" stroke="var(--color-divider)" stroke-width="1"></path>' + dots + labels + '</svg>';

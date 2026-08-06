@@ -84,6 +84,7 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
 .ciudad-mapa:hover .n-firmas,.ciudad-mapa:focus .n-firmas{opacity:1}
 .ciudad-mapa:hover circle,.ciudad-mapa:focus circle{fill-opacity:0.85}
 .ciudad-mapa:focus{outline:none}
+.hp-field{position:absolute !important;left:-5000px;width:1px;height:1px;overflow:hidden}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 .form-op{position:sticky;top:84px}
 @media (max-width:720px){
@@ -189,6 +190,7 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
         <label for="col-url">Enlace</label>
         <input id="col-url" class="input" type="url" maxlength="500" placeholder="https://…">
       </div>
+      <div class="hp-field" aria-hidden="true"><input id="col-web" type="text" name="website" tabindex="-1" autocomplete="off" placeholder="No completar"></div>
       <button type="button" class="btn btn-primary" id="btn-columna">Registrar columna</button>
       <div id="nota-columna" style="display:none;font-size:12.5px;color:var(--color-accent-300);line-height:1.5"></div>
     </div>
@@ -274,6 +276,7 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
         <input id="op-adherir" type="checkbox" checked style="accent-color:var(--color-accent);width:15px;height:15px;margin-top:2px">
         <span>Registrar también mi adhesión como firmante de la declaración</span>
       </label>
+      <div class="hp-field" aria-hidden="true"><input id="op-web" type="text" name="website" tabindex="-1" autocomplete="off" placeholder="No completar"></div>
       <button type="button" class="btn btn-primary btn-block" id="btn-opinar">Publicar opinión</button>
       <div id="nota-op" class="nota-box" style="display:none"></div>
       <div class="text-muted" style="font-size:12px">Tu opinión será visible públicamente en este sitio para el resto de visitantes.</div>
@@ -320,6 +323,7 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
     <input id="f-inst" class="input" type="text" placeholder="Institución" aria-label="Institución" style="width:auto;flex:1 1 180px">
     <input id="f-cargo" class="input" type="text" placeholder="Cargo académico" aria-label="Cargo académico" style="width:auto;flex:1 1 160px">
     <input id="f-disc" class="input" type="text" placeholder="Disciplina o área" aria-label="Disciplina o área" style="width:auto;flex:1 1 160px">
+    <div class="hp-field" aria-hidden="true"><input id="f-web" type="text" name="website" tabindex="-1" autocomplete="off" placeholder="No completar"></div>
     <button type="button" class="btn btn-primary" id="btn-firmar">Adherir</button>
   </div>
   <div id="nota-firma" style="display:none;font-size:13px;color:var(--color-accent-300)"></div>
@@ -427,6 +431,19 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
     clearTimeout(el._t); el._t = setTimeout(function () { el.style.display = 'none'; }, 5000);
   }
 
+  var T_CARGA = Date.now();
+  function marcarEnvio(clave) { try { localStorage.setItem(clave, String(Date.now())); } catch (e) {} }
+  function antiSpam(hpId, notaId, clave) {
+    var hp = $(hpId);
+    if (hp && hp.value) { nota(notaId, 'No se pudo procesar el envío.'); return false; }
+    if (Date.now() - T_CARGA < 5000) { nota(notaId, 'Espera unos segundos antes de enviar.'); return false; }
+    var prev = 0;
+    try { prev = Number(localStorage.getItem(clave)) || 0; } catch (e) {}
+    if (Date.now() - prev < 30000) { nota(notaId, 'Acabas de enviar un registro; espera medio minuto e intenta de nuevo.'); return false; }
+    return true;
+  }
+  function esLimite(e) { return !!(e && e.cuerpo && String(e.cuerpo).indexOf('demasiados') >= 0); }
+
   function aviso(msg) {
     var el = $('aviso-conexion');
     if (!el) return;
@@ -440,7 +457,7 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
     if (opts.headers) { for (var k in opts.headers) headers[k] = opts.headers[k]; }
     opts.headers = headers;
     return fetch(SUPA_URL + '/rest/v1/' + ruta, opts).then(function (r) {
-      if (!r.ok) throw new Error('HTTP ' + r.status);
+      if (!r.ok) return r.text().then(function (t) { var e = new Error('HTTP ' + r.status); e.cuerpo = t || ''; throw e; });
       var ct = r.headers.get('content-type') || '';
       return ct.indexOf('json') >= 0 ? r.json() : null;
     });
@@ -746,10 +763,12 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
   $('btn-opinar').addEventListener('click', function () {
     var texto = $('op-texto').value.trim();
     if (texto.length < 10) return nota('nota-op', 'Escribe tu opinión antes de publicar (mínimo 10 caracteres).');
+    if (!antiSpam('op-web', 'nota-op', 'as_op')) return;
     var nombre = $('op-nombre').value.trim();
     var reg = { nombre: nombre, inst: $('op-inst').value.trim(), disc: $('op-disc').value.trim(), cargo: $('op-cargo').value.trim(), texto: texto.slice(0, 1200), ts: Date.now() };
     var adhiere = nombre && $('op-adherir').checked;
     function exito() {
+      marcarEnvio('as_op');
       $('op-texto').value = ''; $('op-chars').textContent = '0';
       pintarTodo();
       nota('nota-op', 'Tu opinión quedó registrada y ya es visible en la lista. Gracias por participar.');
@@ -763,7 +782,7 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
           if (adhiere) return firmarRemoto(reg.nombre, reg.inst, reg.cargo, reg.disc).catch(function () {});
         })
         .then(exito)
-        .catch(function () { nota('nota-op', 'No se pudo guardar en la base de datos. Revisa tu conexión e intenta nuevamente.'); })
+        .catch(function (e) { nota('nota-op', esLimite(e) ? 'Se alcanzó el límite de envíos desde tu conexión; intenta más tarde.' : 'No se pudo guardar en la base de datos. Revisa tu conexión e intenta nuevamente.'); })
         .then(function () { btn.disabled = false; });
     } else {
       ops.unshift(reg);
@@ -795,7 +814,9 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
   $('btn-firmar').addEventListener('click', function () {
     var nombre = $('f-nombre').value.trim();
     if (!nombre) return nota('nota-firma', 'Indica tu nombre para adherir.');
+    if (!antiSpam('f-web', 'nota-firma', 'as_f')) return;
     function exito() {
+      marcarEnvio('as_f');
       $('f-nombre').value = ''; $('f-inst').value = ''; $('f-cargo').value = ''; $('f-disc').value = '';
       pintarTodo();
       nota('nota-firma', 'Tu adhesión quedó registrada. Gracias.');
@@ -805,7 +826,7 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
       firmarRemoto(nombre, $('f-inst').value, $('f-cargo').value, $('f-disc').value)
         .then(exito)
         .catch(function (e) {
-          nota('nota-firma', e && e.message === 'duplicado' ? 'Ese nombre ya figura en la lista de firmantes.' : 'No se pudo guardar en la base de datos. Revisa tu conexión e intenta nuevamente.');
+          nota('nota-firma', e && e.message === 'duplicado' ? 'Ese nombre ya figura en la lista de firmantes.' : (esLimite(e) ? 'Se alcanzó el límite de envíos desde tu conexión; intenta más tarde.' : 'No se pudo guardar en la base de datos. Revisa tu conexión e intenta nuevamente.'));
         })
         .then(function () { btn.disabled = false; });
     } else {
@@ -831,8 +852,10 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
     if (!/^https?:\/\/[^\s]+\.[^\s]{2,}/i.test(url)) return nota('nota-columna', 'Indica un enlace válido (https://…).');
     var dup = columnas.concat(COLUMNAS).some(function (c) { return String(c.url || '').trim() === url; });
     if (dup) return nota('nota-columna', 'Ese enlace ya figura en la lista.');
+    if (!antiSpam('col-web', 'nota-columna', 'as_col')) return;
     var reg = { titulo: titulo.slice(0, 180), autor: autor.slice(0, 120), url: url.slice(0, 500), ts: Date.now() };
     function exito() {
+      marcarEnvio('as_col');
       $('col-titulo').value = ''; $('col-autor').value = ''; $('col-url').value = '';
       pintarColumnas();
       nota('nota-columna', 'La columna quedó registrada y ya es visible en la lista. Gracias.');
@@ -841,7 +864,7 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
       var btn = $('btn-columna'); btn.disabled = true;
       api('columnas', { method: 'POST', headers: { 'Prefer': 'return=minimal' }, body: JSON.stringify({ titulo: reg.titulo, autor: reg.autor, url: reg.url }) })
         .then(function () { columnas.unshift(reg); exito(); })
-        .catch(function () { nota('nota-columna', 'No se pudo guardar en la base de datos. Verifica que la tabla «columnas» exista e intenta nuevamente.'); })
+        .catch(function (e) { nota('nota-columna', esLimite(e) ? 'Se alcanzó el límite de envíos desde tu conexión; intenta más tarde.' : 'No se pudo guardar en la base de datos. Verifica que la tabla «columnas» exista e intenta nuevamente.'); })
         .then(function () { btn.disabled = false; });
     } else {
       columnas.unshift(reg);

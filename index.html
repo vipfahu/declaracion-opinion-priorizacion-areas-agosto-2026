@@ -311,6 +311,11 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
         <button type="button" class="btn btn-secondary" id="btn-refrescar" style="display:none;margin-left:auto">Actualizar</button>
       </div>
       <div id="ops-vacio" class="vacio">Aún no hay opiniones registradas. Sé la primera persona en opinar.</div>
+      <div id="pag-opiniones-top" style="display:none;align-items:center;justify-content:space-between;gap:var(--space-3);flex-wrap:wrap">
+        <button type="button" class="btn btn-secondary" id="btn-pag-prev-top">← Más recientes</button>
+        <span class="text-muted" style="font-size:12px" id="pag-info-top"></span>
+        <button type="button" class="btn btn-secondary" id="btn-pag-next-top">Siguientes →</button>
+      </div>
       <div id="lista-opiniones" style="display:flex;flex-direction:column;gap:var(--space-3);transition:opacity 0.22s ease,transform 0.22s ease"></div>
       <div id="pag-opiniones" style="display:none;align-items:center;justify-content:space-between;gap:var(--space-3);flex-wrap:wrap">
         <button type="button" class="btn btn-secondary" id="btn-pag-prev">← Más recientes</button>
@@ -554,16 +559,16 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
         '<div style="display:flex;justify-content:flex-end;margin-top:var(--space-2)">' + likeBtn + '</div></article>';
     }).join('');
     $('ops-vacio').style.display = ops.length ? 'none' : 'block';
-    var nav = $('pag-opiniones');
-    if (nav) {
-      if (orden.length <= OPS_POR_PAG) { nav.style.display = 'none'; }
-      else {
-        nav.style.display = 'flex';
-        $('pag-info').textContent = 'Opiniones ' + (ini + 1) + '–' + Math.min(ini + OPS_POR_PAG, orden.length) + ' de ' + orden.length;
-        $('btn-pag-prev').disabled = pagOps === 0;
-        $('btn-pag-next').disabled = pagOps >= totalPag - 1;
-      }
-    }
+    var info = 'Opiniones ' + (ini + 1) + '–' + Math.min(ini + OPS_POR_PAG, orden.length) + ' de ' + orden.length;
+    ['', '-top'].forEach(function (sfx) {
+      var nav = $('pag-opiniones' + sfx);
+      if (!nav) return;
+      if (orden.length <= OPS_POR_PAG) { nav.style.display = 'none'; return; }
+      nav.style.display = 'flex';
+      $('pag-info' + sfx).textContent = info;
+      $('btn-pag-prev' + sfx).disabled = pagOps === 0;
+      $('btn-pag-next' + sfx).disabled = pagOps >= totalPag - 1;
+    });
   }
 
   function irPagina(delta) {
@@ -966,8 +971,11 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
   document.addEventListener('visibilitychange', function () {
     if (!document.hidden && remoto) cargarRemoto().catch(function () {});
   });
-  $('btn-pag-prev').addEventListener('click', function () { irPagina(-1); });
-  $('btn-pag-next').addEventListener('click', function () { irPagina(1); });
+  ['', '-top'].forEach(function (sfx) {
+    var p = $('btn-pag-prev' + sfx), n = $('btn-pag-next' + sfx);
+    if (p) p.addEventListener('click', function () { irPagina(-1); });
+    if (n) n.addEventListener('click', function () { irPagina(1); });
+  });
 
   document.addEventListener('mouseenter', ajustarBurbuja, true);
   document.addEventListener('focusin', ajustarBurbuja);

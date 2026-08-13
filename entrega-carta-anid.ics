@@ -1,0 +1,16 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Declaracion ANID//Entrega carta//ES
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:entrega-carta-anid-20260819@vipfahu.github.io
+DTSTAMP:20260813T120000Z
+DTSTART:20260819T150000Z
+DTEND:20260819T160000Z
+SUMMARY:Entrega de la carta al Ministerio de Ciencia
+LOCATION:Ministerio de Ciencia\, Tecnología\, Conocimiento e Innovación\, Morandé 226\, Santiago\, Chile
+DESCRIPTION:Entrega presencial de la declaración pública sobre las áreas prioritarias del Fondecyt de Postdoctorado 2027. Más información: https://vipfahu.github.io/declaracion-opinion-priorizacion-areas-agosto-2026/
+URL:https://vipfahu.github.io/declaracion-opinion-priorizacion-areas-agosto-2026/
+END:VEVENT
+END:VCALENDAR

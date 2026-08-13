@@ -93,6 +93,10 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
 .burbuja-item .etq-b{font-size:11px;line-height:1.3;color:var(--color-neutral-400);text-align:center}
 .burbuja-info{display:none;position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);width:min(250px,72vw);background:var(--color-surface);border:1px solid var(--color-divider);border-radius:var(--radius-md);padding:var(--space-3);font-size:12px;line-height:1.55;color:var(--color-neutral-300);text-align:left;z-index:30;box-shadow:var(--shadow-md);pointer-events:none}
 .burbuja-item:hover .burbuja-info,.burbuja-item:focus .burbuja-info{display:block}
+#visor-img{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;background:rgba(10,11,18,0.92);padding:var(--space-8);cursor:zoom-out;animation:fadeUp 0.2s ease both}
+#visor-img.abierto{display:flex}
+#visor-img img{max-width:min(1100px,94vw);max-height:92vh;width:auto;height:auto;border-radius:var(--radius-md);box-shadow:var(--shadow-lg)}
+#visor-cerrar{position:absolute;top:var(--space-6);right:var(--space-6);cursor:pointer}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 .form-op{position:sticky;top:84px}
 @media (max-width:720px){
@@ -145,6 +149,18 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
 </section>
 
 <div class="hr"></div>
+
+<section data-screen-label="Convocatoria" style="padding:calc(var(--space-8)*2.5) 0 0;display:flex;flex-direction:column;gap:var(--space-4)">
+  <h6 class="kicker">Convocatoria · Entrega de la carta</h6>
+  <figure style="margin:0;display:flex;flex-direction:column;gap:var(--space-3);max-width:560px">
+    <img id="img-convocatoria" src="convocatoria.jpg" alt="Convocatoria: ANID, el conocimiento no se subordina. Miércoles 19 de agosto, 11:00 horas, Morandé 226, Santiago." title="Haz clic para ampliar" style="width:100%;height:auto;display:block;border-radius:var(--radius-md);border:1px solid var(--color-divider);cursor:zoom-in">
+    <figcaption class="text-muted" style="font-size:12px;line-height:1.55">Entrega de la carta en el Ministerio de Ciencia, Tecnología, Conocimiento e Innovación. Miércoles 19 de agosto, 11:00 horas, Morandé 226, Santiago.</figcaption>
+    <div style="display:flex;gap:var(--space-3);flex-wrap:wrap">
+      <a class="btn btn-secondary" href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Entrega+de+la+carta+al+Ministerio+de+Ciencia&dates=20260819T150000Z/20260819T160000Z&details=Entrega+presencial+de+la+declaraci%C3%B3n+p%C3%BAblica+sobre+las+%C3%A1reas+prioritarias+del+Fondecyt+de+Postdoctorado+2027.&location=Morand%C3%A9+226%2C+Santiago%2C+Chile" target="_blank" rel="noopener">Agregar a Google Calendar</a>
+      <a class="btn btn-secondary" href="entrega-carta-anid.ics" download="entrega-carta-anid.ics">Descargar invitación (iCal)</a>
+    </div>
+  </figure>
+</section>
 
 <section id="declaracion" class="bloque">
   <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--space-4);flex-wrap:wrap;max-width:780px">
@@ -433,9 +449,23 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
   </div>
 </footer>
 
+<div id="visor-img" role="dialog" aria-modal="true" aria-label="Convocatoria ampliada">
+  <button type="button" class="btn btn-secondary" id="visor-cerrar" aria-label="Cerrar">Cerrar</button>
+  <img src="convocatoria.jpg" alt="Convocatoria: ANID, el conocimiento no se subordina. Miércoles 19 de agosto, 11:00 horas, Morandé 226, Santiago.">
+</div>
+
 <script>
 (function () {
   'use strict';
+  var visor = document.getElementById('visor-img');
+  var disparador = document.getElementById('img-convocatoria');
+  if (visor && disparador) {
+    var abrir = function () { visor.classList.add('abierto'); };
+    var cerrar = function () { visor.classList.remove('abierto'); };
+    disparador.addEventListener('click', abrir);
+    visor.addEventListener('click', cerrar);
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') cerrar(); });
+  }
   var SUPA_URL = 'https://hnrngrwpcsqpszyhhlys.supabase.co';
   var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhucm5ncndwY3NxcHN6eWhobHlzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU4ODAxODksImV4cCI6MjEwMTQ1NjE4OX0.cGGtQf5q5PUvoVE6j7dXxy9Ik17R8yJd_4qQan27HJI';
   var remoto = !!SUPA_KEY && SUPA_KEY.indexOf('PEGA_') !== 0;

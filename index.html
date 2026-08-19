@@ -97,6 +97,19 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
 #visor-img.abierto{display:flex}
 #visor-img img{max-width:min(1100px,94vw);max-height:92vh;width:auto;height:auto;border-radius:var(--radius-md);box-shadow:var(--shadow-lg)}
 #visor-cerrar{position:absolute;top:var(--space-6);right:var(--space-6);cursor:pointer}
+.rail-video{display:flex;align-items:center;gap:var(--space-3);width:100%;text-align:left;padding:var(--space-3);border:1px solid var(--color-divider);border-radius:var(--radius-md);background:transparent;color:var(--color-text);cursor:pointer;font:inherit;font-size:13px;line-height:1.4}
+.rail-video:hover{background:color-mix(in srgb,var(--color-text) 7%,transparent)}
+.rail-video[aria-current="true"]{border-color:var(--color-accent);color:var(--color-accent-200);background:var(--color-accent-900)}
+.rail-video .num{font-size:11px;letter-spacing:0.08em;color:var(--color-accent);flex:none}
+.grid-galeria{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,190px),1fr));gap:var(--space-3)}
+.grid-galeria button{padding:0;border:1px solid var(--color-divider);border-radius:var(--radius-md);background:var(--color-surface);cursor:zoom-in;overflow:hidden;aspect-ratio:4/3}
+.grid-galeria button:hover{border-color:var(--color-accent)}
+.grid-galeria button:focus-visible{outline:2px solid var(--color-accent);outline-offset:2px}
+.grid-galeria img{width:100%;height:100%;object-fit:cover;display:block}
+#visor-pie{position:absolute;bottom:calc(var(--space-8)*3.2);left:50%;transform:translateX(-50%);max-width:min(760px,88vw);text-align:center;font-size:12.5px;line-height:1.5;color:var(--color-neutral-300)}
+#visor-nav{position:absolute;bottom:var(--space-6);left:50%;transform:translateX(-50%);display:none;gap:var(--space-3);align-items:center;cursor:default}
+#visor-nav.visible{display:flex}
+#visor-nav span{font-size:12px;color:var(--color-neutral-400);min-width:64px;text-align:center}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 .form-op{position:sticky;top:84px}
 @media (max-width:720px){
@@ -122,6 +135,7 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
 <header style="position:sticky;top:0;z-index:20;background:var(--color-bg)">
   <div class="nav" style="max-width:1080px;margin:0 auto;flex-wrap:wrap">
     <div class="nav-brand" style="font-size:13px;letter-spacing:0.1em;text-transform:uppercase">Declaración pública · Ciencias Sociales · Humanidades · Artes</div>
+    <a href="#registro">Registro</a>
     <a href="#declaracion">Declaración</a>
     <a href="#contexto">Contexto</a>
     <a href="#opinar">Opiniones</a>
@@ -150,6 +164,33 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
 
 <div class="hr"></div>
 
+<section id="registro" class="bloque" style="gap:var(--space-6)">
+  <h6 class="kicker">Registro · Entrega de la carta</h6>
+  <p style="max-width:640px;font-size:14.5px;line-height:1.65;color:var(--color-neutral-300);text-wrap:pretty">Material audiovisual de la entrega de la carta en el Ministerio de Ciencia, Tecnología, Conocimiento e Innovación, el miércoles 19 de agosto de 2026.</p>
+  <div id="registro-vacio" class="vacio">El registro se publicará aquí una vez cargado el material de la entrega.</div>
+
+  <div id="bloque-videos" style="display:none;flex-direction:column;gap:var(--space-4)">
+    <div style="display:flex;align-items:baseline;gap:var(--space-3);flex-wrap:wrap">
+      <div class="accent-mark"></div>
+      <h4>Videos</h4>
+      <span class="tag tag-outline" id="c-videos">0</span>
+    </div>
+    <div id="grid-videos" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:var(--space-4)"></div>
+  </div>
+
+  <div id="bloque-imagenes" style="display:none;flex-direction:column;gap:var(--space-4)">
+    <div style="display:flex;align-items:baseline;gap:var(--space-3);flex-wrap:wrap">
+      <div class="accent-mark"></div>
+      <h4>Imágenes</h4>
+      <span class="tag tag-outline" id="c-imagenes">0</span>
+      <span class="text-muted" style="font-size:12px">Haz clic en una imagen para ampliarla; navega con las flechas del teclado.</span>
+    </div>
+    <div class="grid-galeria" id="grid-imagenes"></div>
+  </div>
+</section>
+
+<div class="hr"></div>
+
 <section data-screen-label="Convocatoria" style="padding:calc(var(--space-8)*2.5) 0 0;display:flex;flex-direction:column;gap:var(--space-4)">
   <h6 class="kicker">Convocatoria · Entrega de la carta</h6>
   <figure style="margin:0;display:flex;flex-direction:column;gap:var(--space-3);max-width:560px">
@@ -161,6 +202,8 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
     </div>
   </figure>
 </section>
+
+<div class="hr"></div>
 
 <section id="declaracion" class="bloque">
   <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--space-4);flex-wrap:wrap;max-width:780px">
@@ -453,23 +496,169 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
   </div>
 </footer>
 
-<div id="visor-img" role="dialog" aria-modal="true" aria-label="Convocatoria ampliada">
+<div id="visor-img" role="dialog" aria-modal="true" aria-label="Imagen ampliada">
   <button type="button" class="btn btn-secondary" id="visor-cerrar" aria-label="Cerrar">Cerrar</button>
-  <img src="convocatoria.jpg" alt="Convocatoria: ANID, el conocimiento no se subordina. Miércoles 19 de agosto, 11:00 horas, Morandé 226, Santiago.">
+  <img id="visor-foto" src="convocatoria.jpg" alt="Convocatoria: ANID, el conocimiento no se subordina. Miércoles 19 de agosto, 11:00 horas, Morandé 226, Santiago.">
+  <figcaption id="visor-pie"></figcaption>
+  <div id="visor-nav">
+    <button type="button" class="btn btn-secondary" id="visor-ant" aria-label="Imagen anterior">Anterior</button>
+    <span id="visor-cuenta"></span>
+    <button type="button" class="btn btn-secondary" id="visor-sig" aria-label="Imagen siguiente">Siguiente</button>
+  </div>
 </div>
 
 <script>
 (function () {
   'use strict';
+  // ----------------------------------------------------------------------
+  // REGISTRO DE LA ENTREGA — material audiovisual
+  // Para publicar material, agrega una entrada por archivo en estas listas
+  // (el orden de la lista es el orden en que se muestran) y sube los archivos
+  // junto al index.html.
+  // ----------------------------------------------------------------------
+  var VIDEOS = [];
+  var IMAGENES = [
+    { archivo: 'imagen-01.jpeg', pie: '' },
+    { archivo: 'imagen-02.jpeg', pie: '' },
+    { archivo: 'imagen-03.jpeg', pie: '' },
+    { archivo: 'imagen-04.jpeg', pie: '' },
+    { archivo: 'imagen-05.jpeg', pie: '' },
+    { archivo: 'imagen-06.jpeg', pie: '' },
+    { archivo: 'imagen-07.jpeg', pie: '' },
+    { archivo: 'imagen-08.jpeg', pie: '' },
+    { archivo: 'imagen-09.jpeg', pie: '' },
+    { archivo: 'imagen-10.jpeg', pie: '' },
+    { archivo: 'imagen-11.jpeg', pie: '' },
+    { archivo: 'imagen-12.jpeg', pie: '' },
+    { archivo: 'imagen-13.jpeg', pie: '' },
+    { archivo: 'imagen-14.jpeg', pie: '' },
+    { archivo: 'imagen-15.jpeg', pie: '' },
+  ];
+
   var visor = document.getElementById('visor-img');
-  var disparador = document.getElementById('img-convocatoria');
-  if (visor && disparador) {
-    var abrir = function () { visor.classList.add('abierto'); };
-    var cerrar = function () { visor.classList.remove('abierto'); };
-    disparador.addEventListener('click', abrir);
-    visor.addEventListener('click', cerrar);
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') cerrar(); });
+  var visorFoto = document.getElementById('visor-foto');
+  var visorPie = document.getElementById('visor-pie');
+  var visorNav = document.getElementById('visor-nav');
+  var visorCuenta = document.getElementById('visor-cuenta');
+  var galeria = [], indice = 0;
+
+  function mostrar(i) {
+    if (!galeria.length) return;
+    indice = (i + galeria.length) % galeria.length;
+    var it = galeria[indice];
+    visorFoto.src = it.archivo;
+    visorFoto.alt = it.pie || 'Registro de la entrega de la carta';
+    visorPie.textContent = it.pie || '';
+    visorCuenta.textContent = (indice + 1) + ' / ' + galeria.length;
   }
+
+  function abrirVisor(lista, i) {
+    galeria = lista || [];
+    if (galeria.length > 1) { visorNav.classList.add('visible'); } else { visorNav.classList.remove('visible'); }
+    if (galeria.length) { mostrar(i || 0); }
+    visor.classList.add('abierto');
+  }
+
+  function cerrarVisor() { visor.classList.remove('abierto'); }
+
+  if (visor) {
+    visor.addEventListener('click', function (e) {
+      if (visorNav.contains(e.target)) return;
+      cerrarVisor();
+    });
+    document.getElementById('visor-ant').addEventListener('click', function () { mostrar(indice - 1); });
+    document.getElementById('visor-sig').addEventListener('click', function () { mostrar(indice + 1); });
+    document.addEventListener('keydown', function (e) {
+      if (!visor.classList.contains('abierto')) return;
+      if (e.key === 'Escape') cerrarVisor();
+      if (galeria.length > 1 && e.key === 'ArrowLeft') mostrar(indice - 1);
+      if (galeria.length > 1 && e.key === 'ArrowRight') mostrar(indice + 1);
+    });
+  }
+
+  var conv = document.getElementById('img-convocatoria');
+  if (conv && visor) {
+    conv.addEventListener('click', function () {
+      abrirVisor([{ archivo: 'convocatoria.jpg', pie: 'Entrega de la carta en el Ministerio de Ciencia, Tecnología, Conocimiento e Innovación. Miércoles 19 de agosto, 11:00 horas, Morandé 226, Santiago.' }], 0);
+    });
+  }
+
+  (function registro() {
+    var vacio = document.getElementById('registro-vacio');
+    var bVid = document.getElementById('bloque-videos');
+    var bImg = document.getElementById('bloque-imagenes');
+    if (!vacio) return;
+    if (IMAGENES.length) vacio.style.display = 'none';
+
+    var gridV = document.getElementById('grid-videos');
+
+    function pintarVideos(lista) {
+      if (!lista.length) return;
+      bVid.style.display = 'flex';
+      vacio.style.display = 'none';
+      document.getElementById('c-videos').textContent = lista.length;
+      gridV.innerHTML = '';
+      lista.forEach(function (it, i) {
+        var fig = document.createElement('figure');
+        fig.style.cssText = 'margin:0;display:flex;flex-direction:column;gap:var(--space-2)';
+        var v = document.createElement('video');
+        v.controls = true;
+        v.preload = 'metadata';
+        v.playsInline = true;
+        v.src = it.archivo;
+        if (it.poster) v.poster = it.poster;
+        v.style.cssText = 'width:100%;height:auto;display:block;border-radius:var(--radius-md);border:1px solid var(--color-divider);background:#0f1017';
+        var cap = document.createElement('figcaption');
+        cap.style.cssText = 'font-size:12px;color:var(--color-neutral-500)';
+        cap.innerHTML = '<span style="color:var(--color-accent);letter-spacing:0.08em">' + (i + 1 < 10 ? '0' : '') + (i + 1) + '</span> ' + (it.titulo || it.pie || '');
+        fig.appendChild(v);
+        fig.appendChild(cap);
+        gridV.appendChild(fig);
+      });
+    }
+
+    // Los videos viven en la carpeta videos/ del repositorio. Si VIDEOS está
+    // vacío, se detectan automáticamente probando los nombres habituales.
+    if (VIDEOS.length) {
+      pintarVideos(VIDEOS);
+    } else {
+      var candidatos = [];
+      for (var n = 1; n <= 20; n++) {
+        var dd = (n < 10 ? '0' : '') + n;
+        candidatos.push('videos/' + n + '.mp4', 'videos/' + n + '.MP4', 'videos/' + dd + '.mp4', 'videos/video-' + dd + '.mp4', 'videos/IMG_' + n + '.mp4');
+      }
+      var hallados = [];
+      var pendientes = candidatos.length;
+      candidatos.forEach(function (url, orden) {
+        fetch(url, { method: 'HEAD' }).then(function (r) {
+          if (r.ok) hallados.push({ archivo: url, orden: orden, titulo: '' });
+        }).catch(function () {}).then(function () {
+          if (--pendientes === 0) {
+            hallados.sort(function (a, b) { return a.orden - b.orden; });
+            pintarVideos(hallados);
+          }
+        });
+      });
+    }
+
+    if (IMAGENES.length) {
+      bImg.style.display = 'flex';
+      document.getElementById('c-imagenes').textContent = IMAGENES.length;
+      var grid = document.getElementById('grid-imagenes');
+      IMAGENES.forEach(function (it, i) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.setAttribute('aria-label', 'Ampliar imagen ' + (i + 1));
+        var im = document.createElement('img');
+        im.src = it.archivo;
+        im.alt = it.pie || ('Registro de la entrega, imagen ' + (i + 1));
+        im.loading = 'lazy';
+        b.appendChild(im);
+        b.addEventListener('click', function () { abrirVisor(IMAGENES, i); });
+        grid.appendChild(b);
+      });
+    }
+  })();
   var SUPA_URL = 'https://hnrngrwpcsqpszyhhlys.supabase.co';
   var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhucm5ncndwY3NxcHN6eWhobHlzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU4ODAxODksImV4cCI6MjEwMTQ1NjE4OX0.cGGtQf5q5PUvoVE6j7dXxy9Ik17R8yJd_4qQan27HJI';
   var remoto = !!SUPA_KEY && SUPA_KEY.indexOf('PEGA_') !== 0;

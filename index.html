@@ -533,6 +533,22 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
     { archivo: 'imagen-13.jpeg', pie: '' },
     { archivo: 'imagen-14.jpeg', pie: '' },
     { archivo: 'imagen-15.jpeg', pie: '' },
+    { archivo: 'imagen-16.jpeg', pie: '' },
+    { archivo: 'imagen-17.jpeg', pie: '' },
+    { archivo: 'imagen-18.jpeg', pie: '' },
+    { archivo: 'imagen-19.jpeg', pie: '' },
+    { archivo: 'imagen-20.jpeg', pie: '' },
+    { archivo: 'imagen-21.jpeg', pie: '' },
+    { archivo: 'imagen-22.jpeg', pie: '' },
+    { archivo: 'imagen-23.jpeg', pie: '' },
+    { archivo: 'imagen-24.jpeg', pie: '' },
+    { archivo: 'imagen-25.jpeg', pie: '' },
+    { archivo: 'imagen-26.jpeg', pie: '' },
+    { archivo: 'imagen-27.jpeg', pie: '' },
+    { archivo: 'imagen-28.jpeg', pie: '' },
+    { archivo: 'imagen-29.jpeg', pie: '' },
+    { archivo: 'imagen-30.jpeg', pie: '' },
+    { archivo: 'imagen-31.jpeg', pie: '' },
   ];
 
   var visor = document.getElementById('visor-img');
@@ -591,47 +607,96 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
     if (IMAGENES.length) vacio.style.display = 'none';
 
     var gridV = document.getElementById('grid-videos');
+    var MAX_VIDEOS = 11;
+
+    // Tarjeta: vista previa estática (primer fotograma dibujado en un canvas)
+    // con botón de reproducción; el video se carga al hacer clic.
+    function tarjetaVideo(it, i) {
+      var fig = document.createElement('figure');
+      fig.style.cssText = 'margin:0;display:flex;flex-direction:column;gap:var(--space-2)';
+
+      var marco = document.createElement('button');
+      marco.type = 'button';
+      marco.setAttribute('aria-label', 'Reproducir registro ' + (i + 1));
+      marco.style.cssText = 'position:relative;padding:0;border:1px solid var(--color-divider);border-radius:var(--radius-md);overflow:hidden;background:#0f1017;cursor:pointer;aspect-ratio:16/9;width:100%;display:block';
+
+      var lienzo = document.createElement('canvas');
+      lienzo.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block';
+
+      var icono = document.createElement('span');
+      icono.setAttribute('aria-hidden', 'true');
+      icono.style.cssText = 'position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none';
+      icono.innerHTML = '<span style="width:48px;height:48px;border-radius:999px;border:1px solid var(--color-accent);background:rgba(22,24,38,0.55);display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 256 256" fill="var(--color-accent)" style="width:20px;height:20px;margin-left:2px"><path d="M232.4,114.49,88.32,26.35a16,16,0,0,0-16.2-.3A15.86,15.86,0,0,0,64,39.87V216.13A15.94,15.94,0,0,0,80,232a16.07,16.07,0,0,0,8.36-2.35L232.4,141.51a15.81,15.81,0,0,0,0-27Z"></path></svg></span>';
+
+      marco.appendChild(lienzo);
+      marco.appendChild(icono);
+
+      // Genera la vista previa fuera de pantalla
+      var previo = document.createElement('video');
+      previo.preload = 'metadata';
+      previo.muted = true;
+      previo.playsInline = true;
+      previo.crossOrigin = 'anonymous';
+      previo.src = it.archivo;
+      previo.addEventListener('loadeddata', function () {
+        try { previo.currentTime = Math.min(0.6, (previo.duration || 1) * 0.1); } catch (e) {}
+      });
+      previo.addEventListener('seeked', function () {
+        try {
+          lienzo.width = previo.videoWidth || 640;
+          lienzo.height = previo.videoHeight || 360;
+          lienzo.getContext('2d').drawImage(previo, 0, 0, lienzo.width, lienzo.height);
+        } catch (e) {}
+      });
+
+      marco.addEventListener('click', function () {
+        var v = document.createElement('video');
+        v.controls = true;
+        v.autoplay = true;
+        v.playsInline = true;
+        v.preload = 'auto';
+        v.src = it.archivo;
+        v.style.cssText = 'width:100%;height:auto;display:block;border-radius:var(--radius-md);border:1px solid var(--color-divider);background:#0f1017';
+        fig.replaceChild(v, marco);
+        var p = v.play(); if (p && p.catch) p.catch(function () {});
+      });
+
+      var cap = document.createElement('figcaption');
+      cap.style.cssText = 'font-size:12px;color:var(--color-neutral-500)';
+      cap.innerHTML = '<span style="color:var(--color-accent);letter-spacing:0.08em">' + (i + 1 < 10 ? '0' : '') + (i + 1) + '</span> ' + (it.titulo || it.pie || 'Registro de la entrega');
+      fig.appendChild(marco);
+      fig.appendChild(cap);
+      return fig;
+    }
 
     function pintarVideos(lista) {
+      lista = lista.slice(0, MAX_VIDEOS);
       if (!lista.length) return;
       bVid.style.display = 'flex';
       vacio.style.display = 'none';
       document.getElementById('c-videos').textContent = lista.length;
       gridV.innerHTML = '';
-      lista.forEach(function (it, i) {
-        var fig = document.createElement('figure');
-        fig.style.cssText = 'margin:0;display:flex;flex-direction:column;gap:var(--space-2)';
-        var v = document.createElement('video');
-        v.controls = true;
-        v.preload = 'metadata';
-        v.playsInline = true;
-        v.src = it.archivo;
-        if (it.poster) v.poster = it.poster;
-        v.style.cssText = 'width:100%;height:auto;display:block;border-radius:var(--radius-md);border:1px solid var(--color-divider);background:#0f1017';
-        var cap = document.createElement('figcaption');
-        cap.style.cssText = 'font-size:12px;color:var(--color-neutral-500)';
-        cap.innerHTML = '<span style="color:var(--color-accent);letter-spacing:0.08em">' + (i + 1 < 10 ? '0' : '') + (i + 1) + '</span> ' + (it.titulo || it.pie || '');
-        fig.appendChild(v);
-        fig.appendChild(cap);
-        gridV.appendChild(fig);
-      });
+      lista.forEach(function (it, i) { gridV.appendChild(tarjetaVideo(it, i)); });
     }
 
-    // Los videos viven en la carpeta videos/ del repositorio. Si VIDEOS está
-    // vacío, se detectan automáticamente probando los nombres habituales.
+    // Los 11 videos viven en la carpeta videos/ del repositorio. Si VIDEOS
+    // está vacío, se detectan probando los nombres habituales y la grilla se
+    // limita a los que existen (máximo 11).
     if (VIDEOS.length) {
       pintarVideos(VIDEOS);
     } else {
       var candidatos = [];
-      for (var n = 1; n <= 20; n++) {
+      for (var n = 1; n <= 15; n++) {
         var dd = (n < 10 ? '0' : '') + n;
-        candidatos.push('videos/' + n + '.mp4', 'videos/' + n + '.MP4', 'videos/' + dd + '.mp4', 'videos/video-' + dd + '.mp4', 'videos/IMG_' + n + '.mp4');
+        ['mp4', 'MP4', 'mov', 'MOV', 'webm'].forEach(function (ext) {
+          candidatos.push('videos/' + n + '.' + ext, 'videos/' + dd + '.' + ext, 'videos/video-' + dd + '.' + ext, 'videos/video-' + n + '.' + ext, 'videos/IMG_' + n + '.' + ext);
+        });
       }
       var hallados = [];
       var pendientes = candidatos.length;
       candidatos.forEach(function (url, orden) {
         fetch(url, { method: 'HEAD' }).then(function (r) {
-          if (r.ok) hallados.push({ archivo: url, orden: orden, titulo: '' });
+          if (r.ok) hallados.push({ archivo: url, orden: orden });
         }).catch(function () {}).then(function () {
           if (--pendientes === 0) {
             hallados.sort(function (a, b) { return a.orden - b.orden; });

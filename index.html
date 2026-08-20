@@ -692,6 +692,8 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
           candidatos.push('videos/' + n + '.' + ext, 'videos/' + dd + '.' + ext, 'videos/video-' + dd + '.' + ext, 'videos/video-' + n + '.' + ext, 'videos/IMG_' + n + '.' + ext);
         });
       }
+      // Sin duplicados: para n >= 10 los patrones con y sin cero generan la misma URL
+      candidatos = candidatos.filter(function (u, i) { return candidatos.indexOf(u) === i; });
       var hallados = [];
       var pendientes = candidatos.length;
       candidatos.forEach(function (url, orden) {
@@ -700,6 +702,7 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
         }).catch(function () {}).then(function () {
           if (--pendientes === 0) {
             hallados.sort(function (a, b) { return a.orden - b.orden; });
+            hallados = hallados.filter(function (x, i) { return hallados.findIndex(function (y) { return y.archivo === x.archivo; }) === i; });
             pintarVideos(hallados);
           }
         });

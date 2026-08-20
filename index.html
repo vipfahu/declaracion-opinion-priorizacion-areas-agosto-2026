@@ -159,7 +159,7 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
     <a class="btn btn-primary" href="#opinar">Registrar una opinión</a>
     <a class="btn btn-secondary" href="#declaracion">Leer la declaración</a>
   </div>
-  <div class="text-muted" style="font-size:13px"><span id="c-ops">0</span> opiniones · <span id="c-firmas">0</span> adhesiones</div>
+  <div class="text-muted" style="font-size:13px"><span id="c-ops">0</span> opiniones · <span id="c-firmas">0</span> adhesiones<span id="bloque-visitas" style="display:none"> · <span id="c-visitas">0</span> visitas</span></div>
 </section>
 
 <div class="hr"></div>
@@ -783,6 +783,32 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
     });
   }
 
+  // Contador de visitas: registra una visita por navegador cada 12 horas y
+  // muestra el total acumulado en la base de datos.
+  function contarVisitas() {
+    var cab = { apikey: SUPA_KEY, Authorization: 'Bearer ' + SUPA_KEY };
+    var ultima = 0;
+    try { ultima = Number(localStorage.getItem('anid_visita_ts')) || 0; } catch (e) {}
+    var nueva = (Date.now() - ultima) > 432e5;
+    var previo = nueva
+      ? fetch(SUPA_URL + '/rest/v1/visitas', {
+          method: 'POST',
+          headers: { apikey: SUPA_KEY, Authorization: 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+          body: JSON.stringify({ ruta: (location.pathname || '/').slice(0, 200) })
+        }).then(function () { try { localStorage.setItem('anid_visita_ts', String(Date.now())); } catch (e) {} }).catch(function () {})
+      : Promise.resolve();
+    return previo.then(function () {
+      return fetch(SUPA_URL + '/rest/v1/visitas?select=id', { headers: { apikey: SUPA_KEY, Authorization: 'Bearer ' + SUPA_KEY, Range: '0-0', Prefer: 'count=exact' } });
+    }).then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      var cr = r.headers.get('content-range') || '';
+      var total = parseInt(cr.split('/')[1], 10);
+      if (!isFinite(total)) throw new Error('sin total');
+      $('c-visitas').textContent = total.toLocaleString('es-CL');
+      $('bloque-visitas').style.display = 'inline';
+    }).catch(function () {});
+  }
+
   function cargarRemoto() {
     function traerTodo(ruta) {
       var TAM = 1000, todo = [];
@@ -1332,6 +1358,7 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
     var na = $('nota-almacen');
     if (na) na.textContent = 'Iniciativa de la comunidad de Ciencias Sociales, Humanidades y Artes · Chile, 2026 · Los registros se sincronizan con una base de datos pública';
     pintarTodo();
+    contarVisitas();
     cargarRemoto().catch(function () {
       aviso('No fue posible conectar con la base de datos. Verifica la configuración; mientras tanto, los registros solo se guardan en este navegador.');
       remoto = false;

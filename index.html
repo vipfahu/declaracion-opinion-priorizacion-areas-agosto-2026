@@ -516,12 +516,11 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
   // (el orden de la lista es el orden en que se muestran) y sube los archivos
   // junto al index.html.
   // ----------------------------------------------------------------------
-  var VIDEOS = [
-    { archivo: '1.mp4' }, { archivo: '2.mp4' }, { archivo: '3.mp4' },
-    { archivo: '4.mp4' }, { archivo: '5.mp4' }, { archivo: '6.mp4' },
-    { archivo: '7.mp4' }, { archivo: '8.mp4' }, { archivo: '9.mp4' },
-    { archivo: '10.mp4' }, { archivo: '11.mp4' }
-  ];
+  // Los 11 registros. Cada entrada prueba varias rutas y extensiones, de modo
+  // que la grilla funciona con los archivos en la raíz o en videos/.
+  var VIDEOS = [1,2,3,4,5,6,7,8,9,10,11].map(function (n) {
+    return { rutas: ['videos/' + n + '.mp4', 'videos/' + n + '.MP4', 'videos/' + n + '.mov', 'videos/' + n + '.MOV', n + '.mp4', n + '.MP4', n + '.mov', n + '.MOV'] };
+  });
   var IMAGENES = [
     { archivo: 'imagen-01.jpeg', pie: '' },
     { archivo: 'imagen-02.jpeg', pie: '' },
@@ -633,24 +632,33 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
       icono.style.cssText = 'position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none';
       icono.innerHTML = '<span style="width:48px;height:48px;border-radius:999px;border:1px solid var(--color-accent);background:rgba(22,24,38,0.55);display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 256 256" fill="var(--color-accent)" style="width:20px;height:20px;margin-left:2px"><path d="M232.4,114.49,88.32,26.35a16,16,0,0,0-16.2-.3A15.86,15.86,0,0,0,64,39.87V216.13A15.94,15.94,0,0,0,80,232a16.07,16.07,0,0,0,8.36-2.35L232.4,141.51a15.81,15.81,0,0,0,0-27Z"></path></svg></span>';
 
+      var aviso = document.createElement('span');
+      aviso.style.cssText = 'position:absolute;inset:0;display:none;align-items:center;justify-content:center;font-size:12px;color:var(--color-neutral-500);pointer-events:none';
+
       marco.appendChild(lienzo);
       marco.appendChild(icono);
+      marco.appendChild(aviso);
 
       // Genera la vista previa fuera de pantalla
       var previo = document.createElement('video');
       previo.preload = 'metadata';
       previo.muted = true;
       previo.playsInline = true;
-      previo.crossOrigin = 'anonymous';
-      previo.src = it.archivo;
+      var rutas = it.rutas || [it.archivo];
+      var idx = 0;
+      var fuente = rutas[0];
+      previo.src = fuente;
       previo.addEventListener('loadeddata', function () {
+        aviso.style.display = 'none';
         try { previo.currentTime = Math.min(0.6, (previo.duration || 1) * 0.1); } catch (e) {}
       });
       previo.addEventListener('error', function () {
-        if (fig.parentNode) fig.parentNode.removeChild(fig);
-        var quedan = gridV.children.length;
-        document.getElementById('c-videos').textContent = quedan;
-        if (!quedan) bVid.style.display = 'none';
+        idx++;
+        if (idx < rutas.length) { fuente = rutas[idx]; previo.src = fuente; return; }
+        // La tarjeta permanece visible: se indica que el archivo no está disponible.
+        aviso.textContent = 'Video no disponible';
+        aviso.style.display = 'flex';
+        icono.style.display = 'none';
       });
       previo.addEventListener('seeked', function () {
         try {
@@ -666,7 +674,7 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
         v.autoplay = true;
         v.playsInline = true;
         v.preload = 'auto';
-        v.src = it.archivo;
+        v.src = fuente;
         v.style.cssText = 'width:100%;height:auto;display:block;border-radius:var(--radius-md);border:1px solid var(--color-divider);background:#0f1017';
         fig.replaceChild(v, marco);
         var p = v.play(); if (p && p.catch) p.catch(function () {});
@@ -683,7 +691,7 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
     function pintarVideos(lista) {
       lista = lista.slice(0, MAX_VIDEOS);
       if (!lista.length) return;
-      bVid.style.display = 'flex';
+      bVid.style.display = 'flex';   // la grilla queda visible siempre
       vacio.style.display = 'none';
       document.getElementById('c-videos').textContent = lista.length;
       gridV.innerHTML = '';

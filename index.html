@@ -783,27 +783,38 @@ section.bloque{scroll-margin-top:72px;padding:calc(var(--space-8)*3) 0;display:f
     });
   }
 
-  // Contador de visitas: registra una visita por navegador cada 12 horas y
-  // muestra el total acumulado en la base de datos.
+  // Contador de visitas: registra cada visita, incluidas las recurrentes,
+  // y muestra el total acumulado en la base de datos.
   function contarVisitas() {
-    var cab = { apikey: SUPA_KEY, Authorization: 'Bearer ' + SUPA_KEY };
-    var ultima = 0;
-    try { ultima = Number(localStorage.getItem('anid_visita_ts')) || 0; } catch (e) {}
-    var nueva = (Date.now() - ultima) > 432e5;
-    var previo = nueva
-      ? fetch(SUPA_URL + '/rest/v1/visitas', {
-          method: 'POST',
-          headers: { apikey: SUPA_KEY, Authorization: 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
-          body: JSON.stringify({ ruta: (location.pathname || '/').slice(0, 200) })
-        }).then(function () { try { localStorage.setItem('anid_visita_ts', String(Date.now())); } catch (e) {} }).catch(function () {})
-      : Promise.resolve();
+    var previo = fetch(SUPA_URL + '/rest/v1/visitas', {
+      method: 'POST',
+      headers: { apikey: SUPA_KEY, Authorization: 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+      body: JSON.stringify({ ruta: (location.pathname || '/').slice(0, 200), referencia: (document.referrer || '').slice(0, 300) || null, idioma: (navigator.language || '').slice(0, 12) || null })
+    }).catch(function () {});
     return previo.then(function () {
-      return fetch(SUPA_URL + '/rest/v1/visitas?select=id', { headers: { apikey: SUPA_KEY, Authorization: 'Bearer ' + SUPA_KEY, Range: '0-0', Prefer: 'count=exact' } });
-    }).then(function (r) {
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      var cr = r.headers.get('content-range') || '';
-      var total = parseInt(cr.split('/')[1], 10);
-      if (!isFinite(total)) throw new Error('sin total');
+      // Preferimos el resumen agregado (no expone filas ni hashes de IP);
+      // si la función aún no existe en la base, contamos filas como antes.
+      return fetch(SUPA_URL + '/rest/v1/rpc/visitas_resumen', {
+        method: 'POST',
+        headers: { apikey: SUPA_KEY, Authorization: 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json' },
+        body: '{}'
+      }).then(function (r) {
+        if (!r.ok) throw new Error('sin rpc');
+        return r.json();
+      }).then(function (d) {
+        if (!d || typeof d.total !== 'number') throw new Error('sin rpc');
+        return d.total;
+      }).catch(function () {
+        return fetch(SUPA_URL + '/rest/v1/visitas?select=id', { headers: { apikey: SUPA_KEY, Authorization: 'Bearer ' + SUPA_KEY, Range: '0-0', Prefer: 'count=exact' } })
+          .then(function (r) {
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            var cr = r.headers.get('content-range') || '';
+            var total = parseInt(cr.split('/')[1], 10);
+            if (!isFinite(total)) throw new Error('sin total');
+            return total;
+          });
+      });
+    }).then(function (total) {
       $('c-visitas').textContent = total.toLocaleString('es-CL');
       $('bloque-visitas').style.display = 'inline';
     }).catch(function () {});

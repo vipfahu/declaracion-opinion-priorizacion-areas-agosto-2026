@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="referrer" content="no-referrer">
+<title>Acceso restringido</title>
+<style>
+  :root { color-scheme: light dark; --bg:#f6f6f8; --fg:#1b1c24; --muted:#666a78; --line:#d6d7de; --accent:#3b4cc0; --card:#fff; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#12131a; --fg:#ececf1; --muted:#9a9cab; --line:#2c2e3a; --accent:#8c98ff; --card:#1a1b24; } }
+  * { box-sizing: border-box; }
+  body { margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:16px;
+         background:var(--bg); color:var(--fg); font:16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  form { width:100%; max-width:360px; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:28px; }
+  h1 { font-size:22px; margin:0 0 6px; }
+  p { margin:0 0 18px; color:var(--muted); font-size:14px; }
+  input { width:100%; padding:10px 12px; font:inherit; color:inherit; background:transparent; border:1px solid var(--line); border-radius:8px; }
+  input:focus { outline:2px solid var(--accent); outline-offset:1px; }
+  button { margin-top:12px; width:100%; padding:10px; font:inherit; font-weight:600; border:0; border-radius:8px; background:var(--accent); color:#fff; cursor:pointer; }
+  button:disabled { opacity:.6; cursor:wait; }
+  #msg { min-height:20px; margin:10px 0 0; font-size:14px; color:#c0392b; }
+</style>
+</head>
+<body>
+<form id="f" autocomplete="off">
+  <h1>Acceso restringido</h1>
+  <p>Ingresa la contraseña para ver el contenido.</p>
+  <input id="pw" type="password" aria-label="Contraseña" autofocus required>
+  <button id="b" type="submit">Entrar</button>
+  <p id="msg" role="alert"></p>
+</form>
+<script>
+(function () {
+  var CFG = {"salt":"Sx2Rwy4VHzh2wL8xFRFrbg==","iter":600000,"core":"f1206ec040ef50bcc4e6da290ecf0707"};
+  var KEY = null, MANIFEST = null;
+  var te = new TextEncoder();
+  function b64(s) { return Uint8Array.from(atob(s), function (c) { return c.charCodeAt(0); }); }
+  function msg(t) { document.getElementById('msg').textContent = t; }
+
+  if (!window.isSecureContext || !navigator.serviceWorker || !crypto.subtle) {
+    msg('Este navegador no permite abrir el contenido (por ejemplo, una ventana privada de Firefox). Prueba con otro navegador.');
+    document.getElementById('b').disabled = true;
+    return;
+  }
+
+  // El service worker pide la clave en cada solicitud; una pestaña bloqueada responde sin clave.
+  navigator.serviceWorker.addEventListener('message', function (e) {
+    if (e.data && e.data.type === 'need-key' && e.ports[0]) e.ports[0].postMessage(KEY ? { key: KEY, manifest: MANIFEST } : null);
+  });
+  var registro = navigator.serviceWorker.register('sw.js');
+
+  function derivar(pw) {
+    return crypto.subtle.importKey('raw', te.encode(pw), 'PBKDF2', false, ['deriveKey']).then(function (base) {
+      return crypto.subtle.deriveKey({ name: 'PBKDF2', salt: b64(CFG.salt), iterations: CFG.iter, hash: 'SHA-256' },
+        base, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
+    });
+  }
+
+  function controlador() {
+    return registro.then(function () { return navigator.serviceWorker.ready; }).then(function (reg) {
+      if (navigator.serviceWorker.controller) return navigator.serviceWorker.controller;
+      return new Promise(function (res, rej) {
+        var t = setTimeout(function () { rej(new Error('sin-control')); }, 4000);
+        navigator.serviceWorker.addEventListener('controllerchange', function () { clearTimeout(t); res(navigator.serviceWorker.controller); }, { once: true });
+        reg.active.postMessage({ type: 'claim' });
+      });
+    });
+  }
+
+  function enviar(ctrl) {
+    return new Promise(function (res) {
+      var ch = new MessageChannel();
+      ch.port1.onmessage = function () { res(); };
+      ctrl.postMessage({ type: 'key', key: KEY, manifest: MANIFEST }, [ch.port2]);
+    });
+  }
+
+  // Reemplaza esta pantalla por el sitio descifrado y ejecuta sus scripts en orden.
+  function mostrar(html) {
+    var doc = new DOMParser().parseFromString(html, 'text/html');
+    document.title = doc.title;
+    for (var i = 0; i < doc.documentElement.attributes.length; i++) {
+      var a = doc.documentElement.attributes[i];
+      document.documentElement.setAttribute(a.name, a.value);
+    }
+    document.head.replaceChildren.apply(document.head, Array.from(doc.head.childNodes).map(function (n) { return document.adoptNode(n); }));
+    document.body.replaceWith(document.adoptNode(doc.body));
+    var scripts = Array.prototype.slice.call(document.querySelectorAll('script'));
+    return scripts.reduce(function (p, viejo) {
+      return p.then(function () {
+        return new Promise(function (res) {
+          var s = document.createElement('script');
+          for (var j = 0; j < viejo.attributes.length; j++) s.setAttribute(viejo.attributes[j].name, viejo.attributes[j].value);
+          if (viejo.src) { s.async = false; s.onload = s.onerror = function () { res(); }; }
+          else s.textContent = viejo.textContent;
+          viejo.replaceWith(s);
+          if (!viejo.src) res();
+        });
+      });
+    }, Promise.resolve()).then(function () {
+      var id = decodeURIComponent(location.hash.slice(1));
+      var el = id && document.getElementById(id);
+      if (el) el.scrollIntoView();
+    });
+  }
+
+  document.getElementById('f').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var b = document.getElementById('b');
+    b.disabled = true; msg(''); b.textContent = 'Verificando…';
+    var nucleo;
+    derivar(document.getElementById('pw').value).then(function (k) {
+      KEY = k;
+      return fetch('d/' + CFG.core).then(function (r) { return r.arrayBuffer(); });
+    }).then(function (buf) {
+      buf = new Uint8Array(buf);
+      return crypto.subtle.decrypt({ name: 'AES-GCM', iv: buf.subarray(0, 12), additionalData: te.encode('core') }, KEY, buf.subarray(12))
+        .catch(function () { throw new Error('clave'); });
+    }).then(function (pt) {
+      nucleo = JSON.parse(new TextDecoder().decode(pt));
+      MANIFEST = nucleo.manifest;
+      return controlador();
+    }).then(enviar).then(function () {
+      return mostrar(nucleo.html);
+    }).catch(function (err) {
+      KEY = null; MANIFEST = null;
+      b.disabled = false; b.textContent = 'Entrar';
+      msg(err.message === 'clave' ? 'Contraseña incorrecta.' :
+          err.message === 'sin-control' ? 'Recarga la página e inténtalo de nuevo.' : 'No se pudo abrir el contenido. Inténtalo de nuevo.');
+    });
+  });
+})();
+</script>
+</body>
+</html>
